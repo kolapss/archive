@@ -2,7 +2,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                   &copy; 2017 Online Library Management System |<a href="https://github.com/kumarpandule2000" target="_blank"  > Designed by : Kumar Pandule</a> 
+                   &copy; 2024 Online Archive Management System | Designed by : <a href="https://github.com/kolapss" target="_blank"  >Alexey Laptev</a> && <a href="https://github.com/flammlgm" target="_blank"  >Dmitrii Bogatov</a>
                 </div>
 
             </div>

@@ -14,7 +14,7 @@
             </div>
 
             <div class="right-div">
-                <a href="logout.php" class="btn btn-danger pull-right">LOG ME OUT</a>
+                <a href="logout.php" class="btn btn-danger pull-right">ВЫЙТИ</a>
             </div>
         </div>
     </div>
@@ -25,40 +25,40 @@
                 <div class="col-md-12">
                     <div class="navbar-collapse collapse ">
                         <ul id="menu-top" class="nav navbar-nav navbar-right">
-                            <li><a href="dashboard.php" class="menu-top-active">DASHBOARD</a></li>
+                            <li><a href="dashboard.php" class="menu-top-active">ПАНЕЛЬ</a></li>
                            
                             <li>
-                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Categories <i class="fa fa-angle-down"></i></a>
+                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Категории <i class="fa fa-angle-down"></i></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="ddlmenuItem">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-category.php">Add Category</a></li>
-                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-categories.php">Manage Categories</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-category.php">Добавить категорию</a></li>
+                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-categories.php">Управлять категорией</a></li>
                                 </ul>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Authors <i class="fa fa-angle-down"></i></a>
+                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Авторы <i class="fa fa-angle-down"></i></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="ddlmenuItem">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-author.php">Add Author</a></li>
-                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-authors.php">Manage Authors</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-author.php">Добавить автора</a></li>
+                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-authors.php">Управлять авторами</a></li>
                                 </ul>
                             </li>
  <li>
-                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Books <i class="fa fa-angle-down"></i></a>
+                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Документы <i class="fa fa-angle-down"></i></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="ddlmenuItem">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-book.php">Add Book</a></li>
-                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-books.php">Manage Books</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-book.php">Добавить документ</a></li>
+                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-books.php">Редактировать документ</a></li>
                                 </ul>
                             </li>
 
                            <li>
-                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Issue Books <i class="fa fa-angle-down"></i></a>
+                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Выданные документы <i class="fa fa-angle-down"></i></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="ddlmenuItem">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="issue-book.php">Issue New Book</a></li>
-                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-issued-books.php">Manage Issued Books</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="issue-book.php">Выдать документ</a></li>
+                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-issued-books.php">Управлять выданными документами</a></li>
                                 </ul>
                             </li>
-                             <li><a href="reg-students.php">Reg Students</a></li>
+                             <li><a href="reg-students.php">Абоненты</a></li>
                     
-  <li><a href="change-password.php">Change Password</a></li>
+  <li><a href="change-password.php">Поменять пароль</a></li>
                         </ul>
                     </div>
                 </div>
