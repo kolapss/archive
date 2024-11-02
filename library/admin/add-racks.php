@@ -7,7 +7,7 @@ if (strlen($_SESSION['alogin']) == 0) {
 } else {
 
     if (isset($_POST['add'])) {
-        $rackId = $_POST['rackID'];
+        $rackId = intval($_POST['rackID']);
         $shelfNum = $_POST['shelfNum'];
         $cellNum = $_POST['cellNum'];
         $date = $_POST['date'];
@@ -26,6 +26,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         $IDINDB=$dbh->lastInsertId();
         //Подготовить запрос на заполнение таблицы shelves
         $inShelf="INSERT INTO shelves(ShelfNumber, Capacity, RackID) VALUES(:i,:cellNum,:IDINDB)";
+        $i=1;
         $query = $dbh->prepare($inShelf);
         $query->bindParam(':i', $i, PDO::PARAM_INT);
         $query->bindParam(':cellNum', $cellNum, PDO::PARAM_INT);
