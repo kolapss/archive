@@ -13,7 +13,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         $date = $_POST['date'];
         $description = $_POST['description'];
         $capacity=$shelfNum*$cellNum;
-        $rackStatus = 'действует';
+        $rackStatus = 'В работе';
         $sql = "INSERT INTO  racks(RackNumber,deliveryDate,Capacity,RackStatus,Description) VALUES(:rackID,:date,:capacity,:RackStatus,:description)";
         $query = $dbh->prepare($sql);
         $query->bindParam(':rackID', $rackId, PDO::PARAM_INT);
@@ -34,12 +34,12 @@ if (strlen($_SESSION['alogin']) == 0) {
         $j=1;
         $shelfID=0;
         $cellStatus='Свободно';
-        $inCell="INSERT INTO storagecells(CellNumber, Capacity, ShelfID, CellStatus) VALUES(:j,:capacity,:shelfID,:cellStatus)";
+        $inCell="INSERT INTO storagecells(CellNumber, ShelfID, CellStatus) VALUES(:j,:shelfID,:cellStatus)";
         $queryInCell=$dbh->prepare($inCell);
         $queryInCell->bindParam(':j',$j, PDO::PARAM_INT);
-        $queryInCell->bindParam(':capacity',$cellNum, PDO::PARAM_INT);
         $queryInCell->bindParam(':shelfID',$shelfID, PDO::PARAM_INT);
         $queryInCell->bindParam(':cellStatus',$cellStatus, PDO::PARAM_STR);
+        //Выполнить вышеперечисленные запросы
         for($i=1;$i<=$shelfNum;$i++)
         {
             $query->execute();

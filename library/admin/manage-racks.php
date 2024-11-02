@@ -129,7 +129,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                         <td class="center"><?php echo htmlentities($result->Description); ?></td> 
                                                         <td class="center">
 
-                                                            <a href="edit-book.php?bookid=<?php echo htmlentities($result->ID); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
+                                                            <a href="edit-racks.php?rackid=<?php echo htmlentities($result->ID); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
                                                             <a href="manage-racks.php?del=<?php echo htmlentities($result->ID); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Списать</button>
                                                         </td>
                                                     </tr>
