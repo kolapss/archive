@@ -41,7 +41,14 @@
                                      <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-authors.php">Управлять авторами</a></li>
                                 </ul>
                             </li>
- <li>
+                            <li>
+                                <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Хранилище <i class="fa fa-angle-down"></i></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="ddlmenuItem">
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-racks.php">Добавить стеллаж</a></li>
+                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-racks.php">Управлять стеллажами</a></li>
+                                </ul>
+                            </li>
+                            <li>
                                 <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Документы <i class="fa fa-angle-down"></i></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="ddlmenuItem">
                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="add-book.php">Добавить документ</a></li>
