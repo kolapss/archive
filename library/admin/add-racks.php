@@ -22,7 +22,35 @@ if (strlen($_SESSION['alogin']) == 0) {
         $query->bindParam(':RackStatus', $rackStatus, PDO::PARAM_STR);
         $query->bindParam(':description', $description, PDO::PARAM_STR);
         $query->execute();
-        $lastInsertId = $dbh->lastInsertId();
+        //запросить ID из таблицы Racks
+        $IDINDB=$dbh->lastInsertId();
+        //Подготовить запрос на заполнение таблицы shelves
+        $inShelf="INSERT INTO shelves(ShelfNumber, Capacity, RackID) VALUES(:i,:cellNum,:IDINDB)";
+        $query = $dbh->prepare($inShelf);
+        $query->bindParam(':i', $i, PDO::PARAM_INT);
+        $query->bindParam(':cellNum', $cellNum, PDO::PARAM_INT);
+        $query->bindParam(':IDINDB', $IDINDB, PDO::PARAM_INT);
+        //Подготовить запрос на заполнение таблицы storagecell
+        $j=1;
+        $shelfID=0;
+        $cellStatus='Свободно';
+        $inCell="INSERT INTO storagecells(CellNumber, Capacity, ShelfID, CellStatus) VALUES(:j,:capacity,:shelfID,:cellStatus)";
+        $queryInCell=$dbh->prepare($inCell);
+        $queryInCell->bindParam(':j',$j, PDO::PARAM_INT);
+        $queryInCell->bindParam(':capacity',$cellNum, PDO::PARAM_INT);
+        $queryInCell->bindParam(':shelfID',$shelfID, PDO::PARAM_INT);
+        $queryInCell->bindParam(':cellStatus',$cellStatus, PDO::PARAM_STR);
+        for($i=1;$i<=$shelfNum;$i++)
+        {
+            $query->execute();
+            $shelfID=$dbh->lastInsertId();
+            for($j=1;$j<=$cellNum;$j++)
+            {
+                $queryInCell->execute();
+            }
+            
+        }
+        $lastInsertId=$dbh->lastInsertId();
         if ($lastInsertId) {
             $_SESSION['msg'] = "Стеллаж успешно добавлен";
             header('location:manage-racks.php');
