@@ -126,12 +126,19 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                         <td class="center"><?php echo htmlentities($result->deliveryDate); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->Capacity); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->RackStatus); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->Description); ?></td> 
+                                                        <td class="center"><?php echo htmlentities($result->Description); ?></td>
                                                         <td class="center">
-
-                                                            <a href="edit-racks.php?rackid=<?php echo htmlentities($result->ID); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
-                                                            <a href="manage-racks.php?del=<?php echo htmlentities($result->ID); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Списать</button>
+                                                            <a href="edit-racks.php?rackid=<?php echo htmlentities($result->ID); ?>">
+                                                                <button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
+                                                            </a>
+                                                            <a href="manage-racks.php?del=<?php echo htmlentities($result->ID); ?>" onclick="return confirm('Are you sure you want to delete?');">
+                                                                <button class="btn btn-danger"><i class="fa fa-pencil"></i> Списать</button>
+                                                            </a>
+                                                            <button class="btn btn-info view-details" data-id="<?php echo htmlentities($result->ID); ?>">
+                                                                <i class="fa fa-info-circle"></i> Подробнее
+                                                            </button>
                                                         </td>
+
                                                     </tr>
                                             <?php
                                                 }
@@ -151,6 +158,9 @@ if (strlen($_SESSION['alogin']) == 0) {
             </div>
         </div>
 
+
+
+
         <!-- CONTENT-WRAPPER SECTION END-->
         <?php include('includes/footer.php'); ?>
         <!-- FOOTER SECTION END-->
@@ -164,6 +174,75 @@ if (strlen($_SESSION['alogin']) == 0) {
         <script src="assets/js/dataTables/dataTables.bootstrap.js"></script>
         <!-- CUSTOM SCRIPTS  -->
         <script src="assets/js/custom.js"></script>
+
+        <!-- JAVASCRIPT ДЛЯ КНОПКИ "ПОДРОБНЕЕ" -->
+        <script>
+            $(document).ready(function() {
+                $('.view-details').on('click', function() {
+                    const rackId = $(this).data('id');
+                    $.ajax({
+                        url: 'requests/get_storagecells.php',
+                        type: 'POST',
+                        data: {
+                            rackId: rackId
+                        },
+                        success: function(data) {
+                            $('#cellDetails').html(data);
+                            $('#dataTables-modal').dataTable();
+                            $('#detailsModal').modal('show');
+                        }
+                    });
+                });
+
+                $('#toggle-free').on('click', function() {
+                    $('#cellDetails tr').each(function() {
+                        const status = $(this).find('td').eq(3).text();
+                        if (status !== 'Свободно') {
+                            $(this).toggle();
+                        }
+                    });
+                });
+            });
+        </script>
+        <!-- Модальное окно-->
+        <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailsModalLabel">Детали ячеек</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <button id="toggle-free" class="btn btn-secondary">Показать только свободные ячейки</button>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Список ячеек
+                            </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-modal">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Номер ячейки</th>
+                                            <th>ID полки</th>
+                                            <th>Статус ячейки</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cellDetails"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
 
     </html>
