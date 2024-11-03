@@ -51,7 +51,7 @@
                             <li>
                                 <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Документы <i class="fa fa-angle-down"></i></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="ddlmenuItem">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-book.php">Добавить документ</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="add-document.php">Добавить документ</a></li>
                                      <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-books.php">Редактировать документ</a></li>
                                 </ul>
                             </li>
