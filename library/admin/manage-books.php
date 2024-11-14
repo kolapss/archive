@@ -44,10 +44,10 @@ if (strlen($_SESSION['alogin']) == 0) {
         <?php include('includes/header.php'); ?>
         <!-- MENU SECTION END-->
         <div class="content-wrapper">
-            <div class="container">
+            <div class="container-fluid " style="padding-left: 100px; padding-right: 100px;">
                 <div class="row pad-botm">
                     <div class="col-md-12">
-                        <h4 class="header-line">Manage Books</h4>
+                        <h4 class="header-line">Управление документами</h4>
                     </div>
                     <div class="row">
                         <?php if ($_SESSION['error'] != "") { ?>
@@ -98,7 +98,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                         <!-- Advanced Tables -->
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                Books Listing
+                                Список документов
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -106,33 +106,85 @@ if (strlen($_SESSION['alogin']) == 0) {
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Book Name</th>
-                                                <th>Category</th>
-                                                <th>Author</th>
-                                                <th>ISBN</th>
-                                                <th>Price</th>
-                                                <th>Action</th>
+                                                <th>Название</th>
+                                                <th>Авторы</th>
+                                                <th>Категории</th>
+                                                <th>Дата создания</th>
+                                                <th>Дата архивирования</th>
+                                                <th>Статус</th>
+                                                <th>Описание</th>
+                                                <th>Местоположение</th>
+                                                <th>Действия</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php $sql = "SELECT tblbooks.BookName,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.id as bookid from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId";
+                                            <?php
+                                            //Выполнить запрос на извлечение данных из таблицы document и местоположения документа
+                                            $sql = "SELECT 
+                                                            d.ID,
+                                                            d.DocumentName,
+                                                            d.CreationDate,
+                                                            d.ArchiveDate,
+                                                            d.Status,
+                                                            d.Description,
+                                                            sc.CellNumber,
+                                                            s.ShelfNumber,
+                                                            r.RackNumber
+                                                            FROM documents d
+                                                            JOIN storagecells sc ON d.LocationID = sc.ID
+                                                            JOIN shelves s ON sc.ShelfID = s.ID
+                                                            JOIN racks r ON s.RackID = r.ID;
+                                                            ";
                                             $query = $dbh->prepare($sql);
                                             $query->execute();
                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                             $cnt = 1;
                                             if ($query->rowCount() > 0) {
-                                                foreach ($results as $result) {               ?>
+                                                foreach ($results as $result) {
+                                                    $docID = $result->ID;
+                                                    //Выполнить запрос на получение авторов            
+                                                    $srAuthors = "SELECT a.AuthorName
+                                                                    FROM document_authors da
+                                                                    JOIN authors a ON da.AuthorID = a.id
+                                                                    WHERE da.DocumentID = :docID";
+                                                    $querySrAuthors = $dbh->prepare($srAuthors);
+                                                    $querySrAuthors->bindParam(':docID',$docID, PDO::PARAM_INT);
+                                                    $querySrAuthors->execute();
+                                                    //Выполнить запрос на получении категорий
+                                                    $srCategories = "SELECT c.CategoryName
+                                                                        FROM document_categories dc
+                                                                        JOIN category c ON dc.CategoryID = c.id
+                                                                        WHERE dc.DocumentID = :docID";
+                                                    $querysrCategories = $dbh->prepare($srCategories);
+                                                    $querysrCategories->bindParam(':docID',$docID, PDO::PARAM_INT);
+                                                    $querysrCategories->execute();
+                                            ?>
                                                     <tr class="odd gradeX">
                                                         <td class="center"><?php echo htmlentities($cnt); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->BookName); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->CategoryName); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->AuthorName); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->ISBNNumber); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->BookPrice); ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->DocumentName); ?></td>
+                                                        <td class="center"><?php 
+                                                        $authors = $querySrAuthors->fetchAll(PDO::FETCH_OBJ);
+                                                        foreach($authors as $author)
+                                                        {
+                                                            echo '<span>• </span>'. $author->AuthorName.'<br>';
+                                                        }
+                                                        ?></td>
+                                                        <td class="center"><?php 
+                                                        $categories = $querysrCategories->fetchAll(PDO::FETCH_OBJ);
+                                                        foreach($categories as $category)
+                                                        {
+                                                            echo '<span>• </span>'.$category->CategoryName.'<br>';
+                                                        }
+                                                        ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->CreationDate); ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->ArchiveDate); ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->Status); ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->Description); ?></td>
+                                                        <td class="center"><?php echo 'Стеллаж: ' . $result->RackNumber . ' <br>Полка: ' . $result->ShelfNumber . ' <br>Ячейка: ' . $result->CellNumber; ?></td>
                                                         <td class="center">
 
-                                                            <a href="edit-book.php?bookid=<?php echo htmlentities($result->bookid); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Edit</button>
-                                                                <a href="manage-books.php?del=<?php echo htmlentities($result->bookid); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Delete</button>
+                                                            <a href="edit-book.php?bookid=<?php echo htmlentities($result->bookid); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
+                                                                <a href="manage-books.php?del=<?php echo htmlentities($result->bookid); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Удалить</button>
                                                         </td>
                                                     </tr>
                                             <?php $cnt = $cnt + 1;
