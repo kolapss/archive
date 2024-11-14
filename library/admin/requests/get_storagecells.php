@@ -1,5 +1,5 @@
 <?php
-require_once("includes/config.php");
+require_once("../includes/config.php");
 
 if (isset($_POST['rackId'])) {
     $rackId = intval($_POST['rackId']);

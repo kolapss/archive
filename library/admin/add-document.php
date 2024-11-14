@@ -1,4 +1,5 @@
 <?php
+$_POST['findPlace'] = 1;
 session_start();
 error_reporting(0);
 include('includes/config.php');
@@ -7,54 +8,78 @@ if (strlen($_SESSION['alogin']) == 0) {
 } else {
 
     if (isset($_POST['add'])) {
-        $rackId = intval($_POST['rackID']);
-        $shelfNum = $_POST['shelfNum'];
-        $cellNum = $_POST['cellNum'];
-        $date = $_POST['date'];
+
+        //Подготовить запрос на добавление документа
+        $documentName = $_POST['docName'];
+        $creationDate = $_POST['creationDate'];
+        $locationId = $_POST['cellNumber'];
+        $status = $_POST['status'];
         $description = $_POST['description'];
-        $capacity = $shelfNum * $cellNum;
-        $rackStatus = 'В работе';
-        $sql = "INSERT INTO  racks(RackNumber,deliveryDate,Capacity,RackStatus,Description) VALUES(:rackID,:date,:capacity,:RackStatus,:description)";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':rackID', $rackId, PDO::PARAM_INT);
-        $query->bindParam(':date', $date, PDO::PARAM_STR);
-        $query->bindParam(':capacity', $capacity, PDO::PARAM_INT);
-        $query->bindParam(':RackStatus', $rackStatus, PDO::PARAM_STR);
-        $query->bindParam(':description', $description, PDO::PARAM_STR);
-        $query->execute();
-        //запросить ID из таблицы Racks
-        $IDINDB = $dbh->lastInsertId();
-        //Подготовить запрос на заполнение таблицы shelves
-        $inShelf = "INSERT INTO shelves(ShelfNumber, Capacity, RackID) VALUES(:i,:cellNum,:IDINDB)";
-        $i = 1;
-        $query = $dbh->prepare($inShelf);
-        $query->bindParam(':i', $i, PDO::PARAM_INT);
-        $query->bindParam(':cellNum', $cellNum, PDO::PARAM_INT);
-        $query->bindParam(':IDINDB', $IDINDB, PDO::PARAM_INT);
-        //Подготовить запрос на заполнение таблицы storagecell
-        $j = 1;
-        $shelfID = 0;
-        $cellStatus = 'Свободно';
-        $inCell = "INSERT INTO storagecells(CellNumber, ShelfID, CellStatus) VALUES(:j,:shelfID,:cellStatus)";
-        $queryInCell = $dbh->prepare($inCell);
-        $queryInCell->bindParam(':j', $j, PDO::PARAM_INT);
-        $queryInCell->bindParam(':shelfID', $shelfID, PDO::PARAM_INT);
-        $queryInCell->bindParam(':cellStatus', $cellStatus, PDO::PARAM_STR);
+        $archiveDate = date('Y-m-d');
+        $addDoc = "INSERT INTO documents (DocumentName, CreationDate, ArchiveDate, LocationID, Status, Description) 
+                VALUES (:documentName, :creationDate, :archiveDate, :locationId, :status, :description)";
+        $queryAddDoc = $dbh->prepare($addDoc);
+        $queryAddDoc->bindParam(':documentName', $documentName, PDO::PARAM_STR);
+        $queryAddDoc->bindParam(':creationDate', $creationDate, PDO::PARAM_STR);
+        $queryAddDoc->bindParam(':archiveDate', $archiveDate, PDO::PARAM_STR);
+        $queryAddDoc->bindParam(':locationId', $locationId, PDO::PARAM_INT);
+        $queryAddDoc->bindParam(':status', $status, PDO::PARAM_STR);
+        $queryAddDoc->bindParam(':description', $description, PDO::PARAM_STR);
+        //Подготовить запрос на изменения статуса ячейки
+        $cellID = intval($_POST['cellNumber']);
+        $chCell = "UPDATE storagecells SET CellStatus = 'Занято' WHERE ID = :id";
+        $querychCell = $dbh->prepare($chCell);
+        $querychCell->bindParam(':id', $cellID, PDO::PARAM_INT);
+        //Подготовить запрос на добавление авторов в таблицу document_authors
+        $authors = $_POST['authors'];
+        $addAuthors = "INSERT INTO document_authors (DocumentID, AuthorID) VALUES (:documentId, :authorId)";
+        $queryAddAuthors = $dbh->prepare($addAuthors);
+        //Подготовить запрос на добавление категорий в таблицу document_categories
+        $categories = $_POST['categories'];
+        $addCat = "INSERT INTO document_categories (DocumentID, CategoryID) 
+                VALUES (:documentID, :categoryID)";
+        $queryAddCat = $dbh->prepare($addCat);
         //Выполнить вышеперечисленные запросы
-        for ($i = 1; $i <= $shelfNum; $i++) {
-            $query->execute();
-            $shelfID = $dbh->lastInsertId();
-            for ($j = 1; $j <= $cellNum; $j++) {
-                $queryInCell->execute();
+        try {
+            $queryAddDoc->execute();
+            $docID = $dbh->lastInsertId();
+            foreach ($authors as $author) {
+                $queryAddAuthors->bindParam(':documentId', $docID, PDO::PARAM_INT);
+                $queryAddAuthors->bindParam(':authorId', $author, PDO::PARAM_INT);
+                $queryAddAuthors->execute();
             }
-        }
-        $lastInsertId = $dbh->lastInsertId();
-        if ($lastInsertId) {
-            $_SESSION['msg'] = "Стеллаж успешно добавлен";
-            header('location:manage-racks.php');
-        } else {
+            foreach ($categories as $category) {
+                $queryAddCat->bindParam(':documentID', $docID, PDO::PARAM_INT);
+                $queryAddCat->bindParam(':categoryID', $category, PDO::PARAM_INT);
+                $queryAddCat->execute();
+            }
+            $querychCell->execute();
+            $_SESSION['msg'] = "Документ успешно добавлен";
+            header('location:manage-books.php');
+        } catch (PDOException $e) {
             $_SESSION['error'] = "Что-то пошло не так, попробуйте снова";
-            header('location:manage-racks.php');
+            header('location:manage-books.php');
+        }
+    }
+    if (isset($_POST['findPlace'])) {
+        $sql = "SELECT sc.ID AS CellID, sc.CellNumber AS CellNumber, s.ShelfNumber, r.RackNumber
+            FROM storagecells sc
+            JOIN shelves s ON sc.ShelfID = s.ID
+            JOIN racks r ON s.RackID = r.ID
+            WHERE sc.CellStatus = 'Свободно'
+            ORDER BY sc.ID
+            LIMIT 1";
+
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_OBJ);
+
+        // Сохраняем результаты, если они найдены
+        if ($result) {
+            $cellID = $result->CellID;
+            $cellNumber = $result->CellNumber;
+            $shelfNumber = $result->ShelfNumber;
+            $rackNumber = $result->RackNumber;
         }
     }
 ?>
@@ -75,6 +100,11 @@ if (strlen($_SESSION['alogin']) == 0) {
         <link href="assets/css/style.css" rel="stylesheet" />
         <!-- GOOGLE FONT -->
         <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+        <script>
+            function showPlace() {
+                document.getElementById('placeResult').style.display = 'block';
+            }
+        </script>
 
     </head>
 
@@ -163,6 +193,27 @@ if (strlen($_SESSION['alogin']) == 0) {
                                         ?>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label>Местоположение<span style="color:red;">*</span></label>
+
+                                    <!-- Блок для отображения результатов -->
+                                    <?php if ($cellID !== null) { ?>
+                                        <div id="placeResult">
+                                            <div class="form-group">
+                                                <div>
+                                                    <label style="font-weight: normal;">Ячейка: <?php echo $cellNumber; ?>, Полка: <?php echo $shelfNumber; ?>, Стеллаж: <?php echo $rackNumber; ?></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php } elseif (isset($_POST['findPlace'])) { ?>
+                                        <div class="form-group">
+                                            <label>Свободных ячеек не найдено</label>
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                                <?php if (isset($cellID)) { ?>
+                                    <input type="hidden" name="cellNumber" value="<?php echo htmlentities($cellID); ?>">
+                                <?php } ?>
                                 <div class="form-group">
                                     <label>Описание</label>
                                     <textarea class="form-control" name="description" rows="4" maxlength="1000" placeholder="Введите описание"></textarea>
