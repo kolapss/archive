@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2024 at 10:18 PM
+-- Generation Time: Nov 14, 2024 at 08:25 PM
 -- Server version: 9.0.1
 -- PHP Version: 8.2.12
 
@@ -42,6 +42,109 @@ CREATE TABLE `admin` (
 
 INSERT INTO `admin` (`id`, `FullName`, `AdminEmail`, `UserName`, `Password`, `updationDate`) VALUES
 (1, 'Kumar Pandule', 'kumarpandule@gmail.com', 'admin', 'e6e061838856bf47e1de730719fb2609', '2021-06-28 16:06:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `authors`
+--
+
+CREATE TABLE `authors` (
+  `id` int UNSIGNED NOT NULL,
+  `AuthorName` varchar(159) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `creationDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `authors`
+--
+
+INSERT INTO `authors` (`id`, `AuthorName`, `creationDate`) VALUES
+(12, 'Stuart J. Russel', '2024-11-14 19:18:32'),
+(13, 'Peter Norvig', '2024-11-14 19:18:52');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category`
+--
+
+CREATE TABLE `category` (
+  `id` int UNSIGNED NOT NULL,
+  `CategoryName` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Status` int DEFAULT NULL,
+  `CreationDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `category`
+--
+
+INSERT INTO `category` (`id`, `CategoryName`, `Status`, `CreationDate`) VALUES
+(5, 'Technology', 1, '2017-07-04 18:35:39'),
+(6, 'Science', 1, '2017-07-04 18:35:55'),
+(7, 'Management', 0, '2017-07-04 18:36:16'),
+(12, 'Научная литература', 1, '2024-11-14 19:20:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `documents`
+--
+
+CREATE TABLE `documents` (
+  `ID` int UNSIGNED NOT NULL,
+  `DocumentName` varchar(200) NOT NULL,
+  `CreationDate` date NOT NULL,
+  `ArchiveDate` date NOT NULL,
+  `LocationID` int UNSIGNED NOT NULL,
+  `Status` enum('В наличии','Выдан','Списан') NOT NULL,
+  `Description` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `documents`
+--
+
+INSERT INTO `documents` (`ID`, `DocumentName`, `CreationDate`, `ArchiveDate`, `LocationID`, `Status`, `Description`) VALUES
+(4, 'Искусственный интелект. Современный подход', '2021-03-24', '2024-11-14', 4303, 'В наличии', 'Решение проблем: знания и рассуждения');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `document_authors`
+--
+
+CREATE TABLE `document_authors` (
+  `DocumentID` int UNSIGNED NOT NULL,
+  `AuthorID` int UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `document_authors`
+--
+
+INSERT INTO `document_authors` (`DocumentID`, `AuthorID`) VALUES
+(4, 12),
+(4, 13);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `document_categories`
+--
+
+CREATE TABLE `document_categories` (
+  `DocumentID` int UNSIGNED NOT NULL,
+  `CategoryID` int UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `document_categories`
+--
+
+INSERT INTO `document_categories` (`DocumentID`, `CategoryID`) VALUES
+(4, 12);
 
 -- --------------------------------------------------------
 
@@ -123,8 +226,8 @@ CREATE TABLE `storagecells` (
 --
 
 INSERT INTO `storagecells` (`ID`, `CellNumber`, `ShelfID`, `CellStatus`) VALUES
-(4302, 1, 83, 'Свободно'),
-(4303, 2, 83, 'Свободно'),
+(4302, 1, 83, 'Занято'),
+(4303, 2, 83, 'Занято'),
 (4304, 3, 83, 'Свободно'),
 (4305, 4, 83, 'Свободно'),
 (4306, 5, 83, 'Свободно'),
@@ -527,31 +630,6 @@ INSERT INTO `storagecells` (`ID`, `CellNumber`, `ShelfID`, `CellStatus`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblauthors`
---
-
-CREATE TABLE `tblauthors` (
-  `id` int NOT NULL,
-  `AuthorName` varchar(159) DEFAULT NULL,
-  `creationDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `UpdationDate` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tblauthors`
---
-
-INSERT INTO `tblauthors` (`id`, `AuthorName`, `creationDate`, `UpdationDate`) VALUES
-(1, 'Kumar Pandule', '2017-07-08 12:49:09', '2021-06-28 16:03:28'),
-(2, 'Kumar', '2017-07-08 14:30:23', '2021-06-28 16:03:35'),
-(3, 'Rahul', '2017-07-08 14:35:08', '2021-06-28 16:03:43'),
-(4, 'HC Verma', '2017-07-08 14:35:21', NULL),
-(5, 'R.D. Sharma ', '2017-07-08 14:35:36', NULL),
-(9, 'fwdfrwer', '2017-07-08 15:22:03', NULL);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tblbooks`
 --
 
@@ -572,30 +650,6 @@ CREATE TABLE `tblbooks` (
 
 INSERT INTO `tblbooks` (`id`, `BookName`, `CatId`, `AuthorId`, `ISBNNumber`, `BookPrice`, `RegDate`, `UpdationDate`) VALUES
 (1, 'PHP And MySql programming', 5, 1, 222333, 20, '2017-07-08 20:04:55', '2017-07-15 05:54:41');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tblcategory`
---
-
-CREATE TABLE `tblcategory` (
-  `id` int NOT NULL,
-  `CategoryName` varchar(150) DEFAULT NULL,
-  `Status` int DEFAULT NULL,
-  `CreationDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `UpdationDate` timestamp NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tblcategory`
---
-
-INSERT INTO `tblcategory` (`id`, `CategoryName`, `Status`, `CreationDate`, `UpdationDate`) VALUES
-(4, 'Romantic', 1, '2017-07-04 18:35:25', '2017-07-06 16:00:42'),
-(5, 'Technology', 1, '2017-07-04 18:35:39', '2017-07-08 17:13:03'),
-(6, 'Science', 1, '2017-07-04 18:35:55', '0000-00-00 00:00:00'),
-(7, 'Management', 0, '2017-07-04 18:36:16', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -665,6 +719,39 @@ ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `authors`
+--
+ALTER TABLE `authors`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `category`
+--
+ALTER TABLE `category`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `documents`
+--
+ALTER TABLE `documents`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `documents_fk_1` (`LocationID`);
+
+--
+-- Indexes for table `document_authors`
+--
+ALTER TABLE `document_authors`
+  ADD PRIMARY KEY (`DocumentID`,`AuthorID`),
+  ADD KEY `AuthorID` (`AuthorID`);
+
+--
+-- Indexes for table `document_categories`
+--
+ALTER TABLE `document_categories`
+  ADD PRIMARY KEY (`DocumentID`,`CategoryID`),
+  ADD KEY `CategoryID` (`CategoryID`);
+
+--
 -- Indexes for table `racks`
 --
 ALTER TABLE `racks`
@@ -686,21 +773,9 @@ ALTER TABLE `storagecells`
   ADD KEY `FK_SHELVES` (`ShelfID`);
 
 --
--- Indexes for table `tblauthors`
---
-ALTER TABLE `tblauthors`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `tblbooks`
 --
 ALTER TABLE `tblbooks`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tblcategory`
---
-ALTER TABLE `tblcategory`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -727,6 +802,24 @@ ALTER TABLE `admin`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `authors`
+--
+ALTER TABLE `authors`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `category`
+--
+ALTER TABLE `category`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `documents`
+--
+ALTER TABLE `documents`
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `racks`
 --
 ALTER TABLE `racks`
@@ -745,22 +838,10 @@ ALTER TABLE `storagecells`
   MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4902;
 
 --
--- AUTO_INCREMENT for table `tblauthors`
---
-ALTER TABLE `tblauthors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
 -- AUTO_INCREMENT for table `tblbooks`
 --
 ALTER TABLE `tblbooks`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `tblcategory`
---
-ALTER TABLE `tblcategory`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tblissuedbookdetails`
@@ -779,6 +860,26 @@ ALTER TABLE `tblstudents`
 --
 
 --
+-- Constraints for table `documents`
+--
+ALTER TABLE `documents`
+  ADD CONSTRAINT `documents_fk_1` FOREIGN KEY (`LocationID`) REFERENCES `storagecells` (`ID`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `document_authors`
+--
+ALTER TABLE `document_authors`
+  ADD CONSTRAINT `document_authors_ibfk_1` FOREIGN KEY (`DocumentID`) REFERENCES `documents` (`ID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `document_authors_ibfk_2` FOREIGN KEY (`AuthorID`) REFERENCES `authors` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `document_categories`
+--
+ALTER TABLE `document_categories`
+  ADD CONSTRAINT `document_categories_ibfk_1` FOREIGN KEY (`DocumentID`) REFERENCES `documents` (`ID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `document_categories_ibfk_2` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `shelves`
 --
 ALTER TABLE `shelves`
@@ -788,7 +889,7 @@ ALTER TABLE `shelves`
 -- Constraints for table `storagecells`
 --
 ALTER TABLE `storagecells`
-  ADD CONSTRAINT `FK_SHELVES` FOREIGN KEY (`ShelfID`) REFERENCES `shelves` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_SHELVES` FOREIGN KEY (`ShelfID`) REFERENCES `shelves` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
