@@ -60,7 +60,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                 $queryAddCat->bindParam(':categoryID', $category, PDO::PARAM_INT);
                 $queryAddCat->execute();
             }
-            $_SESSION['msg'] = "Документ успешно добавлен";
+            $_SESSION['msg'] = "Документ успешно обновлен";
             header('location:manage-documents.php');
         } catch (PDOException $e) {
             $_SESSION['error'] = "Что-то пошло не так, попробуйте снова";

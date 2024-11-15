@@ -55,10 +55,10 @@ if (strlen($_SESSION['alogin']) == 0) {
             }
             $querychCell->execute();
             $_SESSION['msg'] = "Документ успешно добавлен";
-            header('location:manage-books.php');
+            header('location:manage-documents.php');
         } catch (PDOException $e) {
             $_SESSION['error'] = "Что-то пошло не так, попробуйте снова";
-            header('location:manage-books.php');
+            header('location:manage-documents.php');
         }
     }
     if (isset($_POST['findPlace'])) {

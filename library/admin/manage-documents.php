@@ -7,12 +7,21 @@ if (strlen($_SESSION['alogin']) == 0) {
 } else {
     if (isset($_GET['del'])) {
         $id = $_GET['del'];
-        $sql = "delete from tblbooks  WHERE id=:id";
+        $locationID=$_GET['cellID'];
+        $sql = "delete from documents  WHERE ID=:id";
         $query = $dbh->prepare($sql);
         $query->bindParam(':id', $id, PDO::PARAM_STR);
         $query->execute();
-        $_SESSION['delmsg'] = "Category deleted scuccessfully ";
-        header('location:manage-books.php');
+        $status = 'Свободно';
+        $upCell = "UPDATE storagecells 
+                    SET CellStatus = :status
+                    WHERE ID = :locationId";
+        $queryUpCell=$dbh->prepare($upCell);
+        $queryUpCell->bindParam(':locationId',$locationID,PDO::PARAM_INT);
+        $queryUpCell->bindParam(':status',$status,PDO::PARAM_STR);
+        $queryUpCell->execute();
+        $_SESSION['delmsg'] = "Документ списан ";
+        //header('location:manage-documents.php');
     }
 
 
@@ -126,6 +135,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                             d.CreationDate,
                                                             d.ArchiveDate,
                                                             d.Status,
+                                                            d.LocationID,
                                                             d.Description,
                                                             sc.CellNumber,
                                                             s.ShelfNumber,
@@ -184,7 +194,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                         <td class="center">
 
                                                             <a href="edit-document.php?docid=<?php echo htmlentities($result->ID); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
-                                                                <a href="manage-documents.php?del=<?php echo htmlentities($result->ID); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Удалить</button>
+                                                                <a href="manage-documents.php?del=<?php echo htmlentities($result->ID); ?>&cellID=<?php echo htmlentities($result->LocationID); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Списать</button>
                                                         </td>
                                                     </tr>
                                             <?php $cnt = $cnt + 1;
