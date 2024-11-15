@@ -183,8 +183,8 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                         <td class="center"><?php echo 'Стеллаж: ' . $result->RackNumber . ' <br>Полка: ' . $result->ShelfNumber . ' <br>Ячейка: ' . $result->CellNumber; ?></td>
                                                         <td class="center">
 
-                                                            <a href="edit-book.php?bookid=<?php echo htmlentities($result->bookid); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
-                                                                <a href="manage-books.php?del=<?php echo htmlentities($result->bookid); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Удалить</button>
+                                                            <a href="edit-document.php?docid=<?php echo htmlentities($result->ID); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
+                                                                <a href="manage-documents.php?del=<?php echo htmlentities($result->ID); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Удалить</button>
                                                         </td>
                                                     </tr>
                                             <?php $cnt = $cnt + 1;
