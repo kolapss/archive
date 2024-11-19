@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2024 at 08:25 PM
+-- Generation Time: Nov 19, 2024 at 11:43 PM
 -- Server version: 9.0.1
 -- PHP Version: 8.2.12
 
@@ -61,7 +61,8 @@ CREATE TABLE `authors` (
 
 INSERT INTO `authors` (`id`, `AuthorName`, `creationDate`) VALUES
 (12, 'Stuart J. Russel', '2024-11-14 19:18:32'),
-(13, 'Peter Norvig', '2024-11-14 19:18:52');
+(13, 'Peter Norvig', '2024-11-14 19:18:52'),
+(14, 'Kolaps', '2024-11-15 17:45:00');
 
 -- --------------------------------------------------------
 
@@ -89,6 +90,31 @@ INSERT INTO `category` (`id`, `CategoryName`, `Status`, `CreationDate`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `departments`
+--
+
+CREATE TABLE `departments` (
+  `ID` int UNSIGNED NOT NULL,
+  `depName` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `departments`
+--
+
+INSERT INTO `departments` (`ID`, `depName`) VALUES
+(1, 'Юридический отдел'),
+(2, 'Бухгалтерия'),
+(3, 'Финансовый отдел'),
+(4, 'Отдел кадров'),
+(5, 'Отдел продаж'),
+(6, 'Отдел снабжения'),
+(7, 'IT-отдел'),
+(8, 'Архив');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `documents`
 --
 
@@ -107,7 +133,7 @@ CREATE TABLE `documents` (
 --
 
 INSERT INTO `documents` (`ID`, `DocumentName`, `CreationDate`, `ArchiveDate`, `LocationID`, `Status`, `Description`) VALUES
-(4, 'Искусственный интелект. Современный подход', '2021-03-24', '2024-11-14', 4303, 'В наличии', 'Решение проблем: знания и рассуждения');
+(4, 'Искусственный интелект. Современный подход', '2021-03-24', '2024-11-15', 4303, 'В наличии', 'Решение проблем: знания и рассуждения');
 
 -- --------------------------------------------------------
 
@@ -145,6 +171,31 @@ CREATE TABLE `document_categories` (
 
 INSERT INTO `document_categories` (`DocumentID`, `CategoryID`) VALUES
 (4, 12);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employees`
+--
+
+CREATE TABLE `employees` (
+  `ID` int UNSIGNED NOT NULL,
+  `FullName` varchar(100) NOT NULL,
+  `email` varchar(30) NOT NULL,
+  `phone` varchar(12) NOT NULL,
+  `Position` varchar(100) NOT NULL,
+  `DepID` int UNSIGNED NOT NULL,
+  `RegDate` date NOT NULL,
+  `password` varchar(120) NOT NULL,
+  `Status` enum('Активный','Деактивирован') NOT NULL DEFAULT 'Активный'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `employees`
+--
+
+INSERT INTO `employees` (`ID`, `FullName`, `email`, `phone`, `Position`, `DepID`, `RegDate`, `password`, `Status`) VALUES
+(1, 'Лаптев Алексей Игоревич', 'lapteff.lekha@yandex.ru', '+79814568524', 'Системный администратор', 7, '2024-11-19', '81dc9bdb52d04dc20036dbd8313ed055', 'Деактивирован');
 
 -- --------------------------------------------------------
 
@@ -226,7 +277,7 @@ CREATE TABLE `storagecells` (
 --
 
 INSERT INTO `storagecells` (`ID`, `CellNumber`, `ShelfID`, `CellStatus`) VALUES
-(4302, 1, 83, 'Занято'),
+(4302, 1, 83, 'Свободно'),
 (4303, 2, 83, 'Занято'),
 (4304, 3, 83, 'Свободно'),
 (4305, 4, 83, 'Свободно'),
@@ -630,30 +681,6 @@ INSERT INTO `storagecells` (`ID`, `CellNumber`, `ShelfID`, `CellStatus`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblbooks`
---
-
-CREATE TABLE `tblbooks` (
-  `id` int NOT NULL,
-  `BookName` varchar(255) DEFAULT NULL,
-  `CatId` int DEFAULT NULL,
-  `AuthorId` int DEFAULT NULL,
-  `ISBNNumber` int DEFAULT NULL,
-  `BookPrice` int DEFAULT NULL,
-  `RegDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `UpdationDate` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tblbooks`
---
-
-INSERT INTO `tblbooks` (`id`, `BookName`, `CatId`, `AuthorId`, `ISBNNumber`, `BookPrice`, `RegDate`, `UpdationDate`) VALUES
-(1, 'PHP And MySql programming', 5, 1, 222333, 20, '2017-07-08 20:04:55', '2017-07-15 05:54:41');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tblissuedbookdetails`
 --
 
@@ -702,7 +729,7 @@ CREATE TABLE `tblstudents` (
 --
 
 INSERT INTO `tblstudents` (`id`, `StudentId`, `FullName`, `EmailId`, `MobileNumber`, `Password`, `Status`, `RegDate`, `UpdationDate`) VALUES
-(1, 'SID002', 'Anuj kumar', 'anuj.lpu1@gmail.com', '9865472555', 'f925916e2754e5e03f75dd58a5733251', 1, '2017-07-11 15:37:05', '2017-07-15 18:26:21'),
+(1, 'SID002', 'Anuj kumar', 'anuj.lpu1@gmail.com', '9865472555', 'f925916e2754e5e03f75dd58a5733251', 1, '2017-07-11 15:37:05', '2024-11-15 19:54:59'),
 (4, 'SID005', 'sdfsd', 'csfsd@dfsfks.com', '8569710025', '92228410fc8b872914e023160cf4ae8f', 0, '2017-07-11 15:41:27', '2024-11-02 21:13:13'),
 (8, 'SID009', 'test', 'test@gmail.com', '2359874527', 'f925916e2754e5e03f75dd58a5733251', 1, '2017-07-11 15:58:28', '2017-07-15 13:42:44'),
 (9, 'SID010', 'Amit', 'amit@gmail.com', '8585856224', 'f925916e2754e5e03f75dd58a5733251', 1, '2017-07-15 13:40:30', NULL),
@@ -731,6 +758,12 @@ ALTER TABLE `category`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `departments`
+--
+ALTER TABLE `departments`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- Indexes for table `documents`
 --
 ALTER TABLE `documents`
@@ -752,6 +785,13 @@ ALTER TABLE `document_categories`
   ADD KEY `CategoryID` (`CategoryID`);
 
 --
+-- Indexes for table `employees`
+--
+ALTER TABLE `employees`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `FK_employees_1` (`DepID`);
+
+--
 -- Indexes for table `racks`
 --
 ALTER TABLE `racks`
@@ -771,12 +811,6 @@ ALTER TABLE `shelves`
 ALTER TABLE `storagecells`
   ADD PRIMARY KEY (`ID`),
   ADD KEY `FK_SHELVES` (`ShelfID`);
-
---
--- Indexes for table `tblbooks`
---
-ALTER TABLE `tblbooks`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tblissuedbookdetails`
@@ -805,7 +839,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -814,10 +848,22 @@ ALTER TABLE `category`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `departments`
+--
+ALTER TABLE `departments`
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `employees`
+--
+ALTER TABLE `employees`
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `racks`
@@ -836,12 +882,6 @@ ALTER TABLE `shelves`
 --
 ALTER TABLE `storagecells`
   MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4902;
-
---
--- AUTO_INCREMENT for table `tblbooks`
---
-ALTER TABLE `tblbooks`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tblissuedbookdetails`
@@ -878,6 +918,12 @@ ALTER TABLE `document_authors`
 ALTER TABLE `document_categories`
   ADD CONSTRAINT `document_categories_ibfk_1` FOREIGN KEY (`DocumentID`) REFERENCES `documents` (`ID`) ON DELETE CASCADE,
   ADD CONSTRAINT `document_categories_ibfk_2` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `employees`
+--
+ALTER TABLE `employees`
+  ADD CONSTRAINT `FK_employees_1` FOREIGN KEY (`DepID`) REFERENCES `departments` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `shelves`

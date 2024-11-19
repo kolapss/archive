@@ -5,35 +5,32 @@ error_reporting(0);
 if (isset($_POST['signup'])) {
     //code for captach verification
     if ($_POST["vercode"] != $_SESSION["vercode"] or $_SESSION["vercode"] == '') {
-        echo "<script>alert('Incorrect verification code');</script>";
+        echo "<script>alert('Неправильный проверочный код');</script>";
     } else {
-        //Code for student ID
-        $count_my_page = ("studentid.txt");
-        $hits = file($count_my_page);
-        $hits[0]++;
-        $fp = fopen($count_my_page, "w");
-        fputs($fp, "$hits[0]");
-        fclose($fp);
-        $StudentId = $hits[0];
         $fname = $_POST['fullanme'];
         $mobileno = $_POST['mobileno'];
         $email = $_POST['email'];
         $password = md5($_POST['password']);
-        $status = 1;
-        $sql = "INSERT INTO  tblstudents(StudentId,FullName,MobileNumber,EmailId,Password,Status) VALUES(:StudentId,:fname,:mobileno,:email,:password,:status)";
+        $position = $_POST['position'];
+        $depID = $_POST['depID'];
+        $regDate = date('Y-m-d');
+        $status = "Деактивирован";
+        $sql = "INSERT INTO  employees(FullName,email,phone,Position,DepID, RegDate, password, Status) VALUES(:fname,:email,:mobileno,:position,:depID,:regDate,:password,:status)";
         $query = $dbh->prepare($sql);
-        $query->bindParam(':StudentId', $StudentId, PDO::PARAM_STR);
         $query->bindParam(':fname', $fname, PDO::PARAM_STR);
         $query->bindParam(':mobileno', $mobileno, PDO::PARAM_STR);
         $query->bindParam(':email', $email, PDO::PARAM_STR);
+        $query->bindParam(':position', $position, PDO::PARAM_STR);
+        $query->bindParam(':depID', $depID, PDO::PARAM_INT);
+        $query->bindParam(':regDate', $regDate, PDO::PARAM_STR);
         $query->bindParam(':password', $password, PDO::PARAM_STR);
         $query->bindParam(':status', $status, PDO::PARAM_STR);
         $query->execute();
         $lastInsertId = $dbh->lastInsertId();
         if ($lastInsertId) {
-            echo '<script>alert("Your Registration successfull and your student id is  "+"' . $StudentId . '")</script>';
+            echo '<script>alert("Вы успешно зарегистрировались, учетная запись активируется после проверки администратором")</script>';
         } else {
-            echo "<script>alert('Something went wrong. Please try again');</script>";
+            echo "<script>alert('Что-то пошло не так. Попробуйте еще раз.');</script>";
         }
     }
 }
@@ -111,19 +108,41 @@ if (isset($_POST['signup'])) {
                             <form name="signup" method="post" onSubmit="return valid();">
                                 <div class="form-group">
                                     <label>Введите ФИО</label>
-                                    <input class="form-control" type="text" name="fullanme" autocomplete="off" required />
+                                    <input class="form-control" type="text" name="fullanme" autocomplete="on" required />
                                 </div>
 
 
                                 <div class="form-group">
                                     <label>Мобильный телефон :</label>
-                                    <input class="form-control" type="text" name="mobileno" maxlength="10" autocomplete="off" required />
+                                    <input class="form-control" type="text" name="mobileno" maxlength="12" autocomplete="on" required />
                                 </div>
 
                                 <div class="form-group">
                                     <label>Введите Email</label>
-                                    <input class="form-control" type="email" name="email" id="emailid" onBlur="checkAvailability()" autocomplete="off" required />
+                                    <input class="form-control" type="email" name="email" id="emailid" onBlur="checkAvailability()" autocomplete="on" required />
                                     <span id="user-availability-status" style="font-size:12px;"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Должность :</label>
+                                    <input class="form-control" type="text" name="position" maxlength="100" autocomplete="on" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Отдел</label>
+                                    <select class="form-control" name="depID" required>
+                                        <?php
+                                        //Получение списка отделов
+                                        $sql = "SELECT ID, depName FROM departments";
+                                        $query = $dbh->prepare($sql);
+                                        $query->execute();
+                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                        if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) {
+                                                echo "<option value='$result->ID'>" . htmlentities($result->depName) . "</option>";
+                                            }
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
@@ -139,7 +158,7 @@ if (isset($_POST['signup'])) {
                                     <label>Проверочный код : </label>
                                     <input type="text" name="vercode" maxlength="5" autocomplete="off" required style="width: 150px; height: 25px;" />&nbsp;<img src="captcha.php">
                                 </div>
-                                <button type="submit" name="signup" class="btn btn-danger" id="submit">Зарегестрироваться </button>
+                                <button type="submit" name="signup" class="btn btn-danger" id="submit">Зарегистрироваться </button>
 
                             </form>
                         </div>
