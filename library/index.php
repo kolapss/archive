@@ -8,11 +8,11 @@ if ($_SESSION['login'] != '') {
 if (isset($_POST['login'])) {
   //code for captach verification
   if ($_POST["vercode"] != $_SESSION["vercode"] or $_SESSION["vercode"] == '') {
-    echo "<script>alert('Incorrect verification code');</script>";
+    echo "<script>alert('Неправильный проверочный код');</script>";
   } else {
     $email = $_POST['emailid'];
     $password = md5($_POST['password']);
-    $sql = "SELECT EmailId,Password,StudentId,Status FROM tblstudents WHERE EmailId=:email and Password=:password";
+    $sql = "SELECT email,password,ID,Status FROM employees WHERE email=:email and password=:password";
     $query = $dbh->prepare($sql);
     $query->bindParam(':email', $email, PDO::PARAM_STR);
     $query->bindParam(':password', $password, PDO::PARAM_STR);
@@ -21,12 +21,12 @@ if (isset($_POST['login'])) {
 
     if ($query->rowCount() > 0) {
       foreach ($results as $result) {
-        $_SESSION['stdid'] = $result->StudentId;
-        if ($result->Status == 1) {
+        $_SESSION['stdid'] = $result->ID;
+        if ($result->Status == "Активный") {
           $_SESSION['login'] = $_POST['emailid'];
           echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
         } else {
-          echo "<script>alert('Your Account Has been blocked .Please contact admin');</script>";
+          echo "<script>alert('Ваш аккаунт заблокирован. Свяжитесь с администратором.');</script>";
         }
       }
     } else {
@@ -79,7 +79,7 @@ if (isset($_POST['login'])) {
 
                 <div class="form-group">
                   <label>Введите Email</label>
-                  <input class="form-control" type="text" name="emailid" required autocomplete="off" />
+                  <input class="form-control" type="text" name="emailid" required autocomplete="on" />
                 </div>
                 <div class="form-group">
                   <label>Пароль</label>
@@ -92,7 +92,7 @@ if (isset($_POST['login'])) {
                   <input type="text" class="form-control1" name="vercode" maxlength="5" autocomplete="off" required style="height:25px;" />&nbsp;<img src="captcha.php">
                 </div>
 
-                <button type="submit" name="login" class="btn btn-info">ЛОГИН </button> | <a href="signup.php">Ещё не зарегестрированы?</a>
+                <button type="submit" name="login" class="btn btn-info">ЛОГИН </button> | <a href="signup.php">Ещё не зарегистрированы?</a>
               </form>
             </div>
           </div>

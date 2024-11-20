@@ -8,11 +8,11 @@ if (strlen($_SESSION['alogin']) == 0) {
 
     // code for block student    
     if (isset($_GET['inid'])) {
-        $id = $_GET['inid'];
-        $status = 0;
-        $sql = "update tblstudents set Status=:status  WHERE id=:id";
+        $id = intval($_GET['inid']);
+        $status = "Деактивирован";
+        $sql = "update employees set Status=:status  WHERE ID=:id";
         $query = $dbh->prepare($sql);
-        $query->bindParam(':id', $id, PDO::PARAM_STR);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->bindParam(':status', $status, PDO::PARAM_STR);
         $query->execute();
         header('location:reg-students.php');
@@ -22,11 +22,11 @@ if (strlen($_SESSION['alogin']) == 0) {
 
     //code for active students
     if (isset($_GET['id'])) {
-        $id = $_GET['id'];
-        $status = 1;
-        $sql = "update tblstudents set Status=:status  WHERE id=:id";
+        $id = intval($_GET['id']);
+        $status = "Активный";
+        $sql = "update employees set Status=:status  WHERE ID=:id";
         $query = $dbh->prepare($sql);
-        $query->bindParam(':id', $id, PDO::PARAM_STR);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->bindParam(':status', $status, PDO::PARAM_STR);
         $query->execute();
         header('location:reg-students.php');
@@ -74,52 +74,54 @@ if (strlen($_SESSION['alogin']) == 0) {
                         <!-- Advanced Tables -->
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                Reg Students
+                                Зарегистрированные абоненты
                             </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
-                                                <th>#</th>
-                                                <th>Student ID</th>
-                                                <th>Student Name</th>
-                                                <th>Email id </th>
-                                                <th>Mobile Number</th>
-                                                <th>Reg Date</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
+                                                <th>ФИО</th>
+                                                <th>Email</th>
+                                                <th>Телефон </th>
+                                                <th>Отдел</th>
+                                                <th>Должность</th>
+                                                <th>Дата регистрации</th>
+                                                <th>Статус</th>
+                                                <th>Действия</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php $sql = "SELECT * from tblstudents";
-                                            $query = $dbh->prepare($sql);
-                                            $query->execute();
-                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                            $cnt = 1;
-                                            if ($query->rowCount() > 0) {
+                                            <?php
+                                            $vwEmployees = "SELECT employees.*, departments.depName
+                                                    FROM employees
+                                                    INNER JOIN departments ON employees.DepID = departments.ID;";
+                                            $queryVwEmployees = $dbh->prepare($vwEmployees);
+                                            $queryVwEmployees->execute();
+                                            $results = $queryVwEmployees->fetchAll(PDO::FETCH_OBJ);
+                                            if ($queryVwEmployees->rowCount() > 0) {
                                                 foreach ($results as $result) {               ?>
                                                     <tr class="odd gradeX">
-                                                        <td class="center"><?php echo htmlentities($cnt); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->StudentId); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->FullName); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->EmailId); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->MobileNumber); ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->email); ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->phone); ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->depName); ?></td>
+                                                        <td class="center"><?php echo htmlentities($result->Position); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->RegDate); ?></td>
-                                                        <td class="center"><?php if ($result->Status == 1) {
-                                                                                echo htmlentities("Active");
+                                                        <td class="center"><?php if ($result->Status == "Активный") {
+                                                                                echo htmlentities("Активен");
                                                                             } else {
 
 
-                                                                                echo htmlentities("Blocked");
+                                                                                echo htmlentities("Деактивирован");
                                                                             }
                                                                             ?></td>
                                                         <td class="center">
-                                                            <?php if ($result->Status == 1) { ?>
-                                                                <a href="reg-students.php?inid=<?php echo htmlentities($result->id); ?>" onclick="return confirm('Are you sure you want to block this student?');"" >  <button class=" btn btn-danger"> Inactive</button>
+                                                            <?php if ($result->Status == "Активный") { ?>
+                                                                <a href="reg-students.php?inid=<?php echo htmlentities($result->ID); ?>" onclick="return confirm('Are you sure you want to block this user?');"" >  <button class=" btn btn-danger"> Inactive</button>
                                                                 <?php } else { ?>
 
-                                                                    <a href="reg-students.php?id=<?php echo htmlentities($result->id); ?>" onclick="return confirm('Are you sure you want to active this student?');""><button class=" btn btn-primary"> Active</button>
+                                                                    <a href="reg-students.php?id=<?php echo htmlentities($result->ID); ?>" onclick="return confirm('Are you sure you want to active this user?');""><button class=" btn btn-primary"> Active</button>
                                                                     <?php } ?>
 
                                                         </td>
