@@ -3,7 +3,7 @@ require_once("includes/config.php");
 if (!empty($_POST["bookid"])) {
   $bookid = $_POST["bookid"];
 
-  $sql = "SELECT BookName,id FROM tblbooks WHERE (ISBNNumber=:bookid)";
+  $sql = "SELECT DocumentName,ID FROM documents WHERE (ID=:bookid)";
   $query = $dbh->prepare($sql);
   $query->bindParam(':bookid', $bookid, PDO::PARAM_STR);
   $query->execute();
@@ -11,10 +11,10 @@ if (!empty($_POST["bookid"])) {
   $cnt = 1;
   if ($query->rowCount() > 0) {
     foreach ($results as $result) { ?>
-      <option value="<?php echo htmlentities($result->id); ?>"><?php echo htmlentities($result->BookName); ?></option>
+      <option value="<?php echo htmlentities($result->ID); ?>"><?php echo htmlentities($result->DocumentName); ?></option>
       <b>Book Name :</b>
     <?php
-      echo htmlentities($result->BookName);
+      echo htmlentities($result->DocumentName);
       echo "<script>$('#submit').prop('disabled',false);</script>";
     }
   } else { ?>

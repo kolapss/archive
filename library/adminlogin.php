@@ -13,7 +13,7 @@ if (isset($_POST['login'])) {
 
         $username = $_POST['username'];
         $password = md5($_POST['password']);
-        $sql = "SELECT UserName,Password FROM admin WHERE UserName=:username and Password=:password";
+        $sql = "SELECT id, UserName,Password FROM admin WHERE UserName=:username and Password=:password";
         $query = $dbh->prepare($sql);
         $query->bindParam(':username', $username, PDO::PARAM_STR);
         $query->bindParam(':password', $password, PDO::PARAM_STR);
@@ -21,6 +21,7 @@ if (isset($_POST['login'])) {
         $results = $query->fetchAll(PDO::FETCH_OBJ);
         if ($query->rowCount() > 0) {
             $_SESSION['alogin'] = $_POST['username'];
+            $_SESSION['aID']=$results[0]->id;
             echo "<script type='text/javascript'> document.location ='admin/dashboard.php'; </script>";
         } else {
             echo "<script>alert('Invalid Details');</script>";

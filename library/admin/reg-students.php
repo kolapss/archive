@@ -61,10 +61,10 @@ if (strlen($_SESSION['alogin']) == 0) {
         <?php include('includes/header.php'); ?>
         <!-- MENU SECTION END-->
         <div class="content-wrapper">
-            <div class="container">
+            <div class="container-fluid " style="padding-left: 100px; padding-right: 100px;">
                 <div class="row pad-botm">
                     <div class="col-md-12">
-                        <h4 class="header-line">Manage Reg Students</h4>
+                        <h4 class="header-line">Управление абонентами</h4>
                     </div>
 
 
@@ -81,6 +81,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                     <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                         <thead>
                                             <tr>
+                                                <th>ID</th>
                                                 <th>ФИО</th>
                                                 <th>Email</th>
                                                 <th>Телефон </th>
@@ -102,6 +103,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                             if ($queryVwEmployees->rowCount() > 0) {
                                                 foreach ($results as $result) {               ?>
                                                     <tr class="odd gradeX">
+                                                        <td class="center"><?php echo htmlentities($result->ID); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->FullName); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->email); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->phone); ?></td>

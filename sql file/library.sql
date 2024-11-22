@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 19, 2024 at 11:43 PM
+-- Generation Time: Nov 22, 2024 at 08:32 PM
 -- Server version: 9.0.1
 -- PHP Version: 8.2.12
 
@@ -195,7 +195,30 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`ID`, `FullName`, `email`, `phone`, `Position`, `DepID`, `RegDate`, `password`, `Status`) VALUES
-(1, 'Лаптев Алексей Игоревич', 'lapteff.lekha@yandex.ru', '+79814568524', 'Системный администратор', 7, '2024-11-19', '81dc9bdb52d04dc20036dbd8313ed055', 'Деактивирован');
+(1, 'Лаптев Алексей Игоревич', 'lapteff.lekha@yandex.ru', '+79814568525', 'Системный администратор', 7, '2024-11-19', '827ccb0eea8a706c4c34a16891f84e7b', 'Активный');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `operations`
+--
+
+CREATE TABLE `operations` (
+  `ID` int UNSIGNED NOT NULL,
+  `opType` enum('Выдача','Возврат','Списание') NOT NULL,
+  `opDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `opID` int UNSIGNED NOT NULL,
+  `emID` int UNSIGNED NOT NULL,
+  `docId` int UNSIGNED NOT NULL,
+  `description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `operations`
+--
+
+INSERT INTO `operations` (`ID`, `opType`, `opDate`, `opID`, `emID`, `docId`, `description`) VALUES
+(1, 'Выдача', '2024-11-22 18:45:30', 1, 1, 4, '');
 
 -- --------------------------------------------------------
 
@@ -706,35 +729,6 @@ INSERT INTO `tblissuedbookdetails` (`id`, `BookId`, `StudentID`, `IssuesDate`, `
 (5, 1, 'SID009', '2017-07-15 10:59:26', NULL, 0, NULL),
 (6, 3, 'SID011', '2017-07-15 18:02:55', NULL, 0, NULL);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `tblstudents`
---
-
-CREATE TABLE `tblstudents` (
-  `id` int NOT NULL,
-  `StudentId` varchar(100) DEFAULT NULL,
-  `FullName` varchar(120) DEFAULT NULL,
-  `EmailId` varchar(120) DEFAULT NULL,
-  `MobileNumber` char(11) DEFAULT NULL,
-  `Password` varchar(120) DEFAULT NULL,
-  `Status` int DEFAULT NULL,
-  `RegDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `UpdationDate` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tblstudents`
---
-
-INSERT INTO `tblstudents` (`id`, `StudentId`, `FullName`, `EmailId`, `MobileNumber`, `Password`, `Status`, `RegDate`, `UpdationDate`) VALUES
-(1, 'SID002', 'Anuj kumar', 'anuj.lpu1@gmail.com', '9865472555', 'f925916e2754e5e03f75dd58a5733251', 1, '2017-07-11 15:37:05', '2024-11-15 19:54:59'),
-(4, 'SID005', 'sdfsd', 'csfsd@dfsfks.com', '8569710025', '92228410fc8b872914e023160cf4ae8f', 0, '2017-07-11 15:41:27', '2024-11-02 21:13:13'),
-(8, 'SID009', 'test', 'test@gmail.com', '2359874527', 'f925916e2754e5e03f75dd58a5733251', 1, '2017-07-11 15:58:28', '2017-07-15 13:42:44'),
-(9, 'SID010', 'Amit', 'amit@gmail.com', '8585856224', 'f925916e2754e5e03f75dd58a5733251', 1, '2017-07-15 13:40:30', NULL),
-(10, 'SID011', 'Sarita Pandey', 'sarita@gmail.com', '4672423754', 'f925916e2754e5e03f75dd58a5733251', 1, '2017-07-15 18:00:59', NULL);
-
 --
 -- Indexes for dumped tables
 --
@@ -792,6 +786,15 @@ ALTER TABLE `employees`
   ADD KEY `FK_employees_1` (`DepID`);
 
 --
+-- Indexes for table `operations`
+--
+ALTER TABLE `operations`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `FK_operations_1` (`opID`),
+  ADD KEY `FK_employees_2` (`emID`),
+  ADD KEY `FK_employees_3` (`docId`);
+
+--
 -- Indexes for table `racks`
 --
 ALTER TABLE `racks`
@@ -817,13 +820,6 @@ ALTER TABLE `storagecells`
 --
 ALTER TABLE `tblissuedbookdetails`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tblstudents`
---
-ALTER TABLE `tblstudents`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `StudentId` (`StudentId`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -866,6 +862,12 @@ ALTER TABLE `employees`
   MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `operations`
+--
+ALTER TABLE `operations`
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `racks`
 --
 ALTER TABLE `racks`
@@ -888,12 +890,6 @@ ALTER TABLE `storagecells`
 --
 ALTER TABLE `tblissuedbookdetails`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `tblstudents`
---
-ALTER TABLE `tblstudents`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
@@ -924,6 +920,14 @@ ALTER TABLE `document_categories`
 --
 ALTER TABLE `employees`
   ADD CONSTRAINT `FK_employees_1` FOREIGN KEY (`DepID`) REFERENCES `departments` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `operations`
+--
+ALTER TABLE `operations`
+  ADD CONSTRAINT `FK_employees_2` FOREIGN KEY (`emID`) REFERENCES `employees` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_employees_3` FOREIGN KEY (`docId`) REFERENCES `documents` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_operations_1` FOREIGN KEY (`opID`) REFERENCES `employees` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `shelves`

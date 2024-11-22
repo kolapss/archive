@@ -59,8 +59,8 @@
                            <li>
                                 <a href="#" class="dropdown-toggle" id="ddlmenuItem" data-toggle="dropdown"> Выданные документы <i class="fa fa-angle-down"></i></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="ddlmenuItem">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="issue-book.php">Выдать документ</a></li>
-                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-issued-books.php">Управлять выданными документами</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="issue-document.php">Выдать документ</a></li>
+                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="manage-issued-documents.php">Управлять выданными документами</a></li>
                                 </ul>
                             </li>
                              <li><a href="reg-students.php">Абоненты</a></li>
