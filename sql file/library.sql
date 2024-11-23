@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 23, 2024 at 08:40 PM
+-- Generation Time: Nov 23, 2024 at 11:42 PM
 -- Server version: 9.0.1
 -- PHP Version: 8.2.12
 
@@ -28,20 +28,19 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admin` (
-  `id` int NOT NULL,
-  `FullName` varchar(100) DEFAULT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `FullName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `AdminEmail` varchar(120) DEFAULT NULL,
   `UserName` varchar(100) NOT NULL,
-  `Password` varchar(100) NOT NULL,
-  `updationDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP
+  `Password` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`id`, `FullName`, `AdminEmail`, `UserName`, `Password`, `updationDate`) VALUES
-(1, 'Kumar Pandule', 'kumarpandule@gmail.com', 'admin', 'e6e061838856bf47e1de730719fb2609', '2021-06-28 16:06:08');
+INSERT INTO `admin` (`id`, `FullName`, `AdminEmail`, `UserName`, `Password`) VALUES
+(1, 'Лаптев Алексей', 'kumarpandule@gmail.com', 'admin', 'e6e061838856bf47e1de730719fb2609');
 
 -- --------------------------------------------------------
 
@@ -188,34 +187,35 @@ CREATE TABLE `documents` (
   `ArchiveDate` date NOT NULL,
   `LocationID` int UNSIGNED NOT NULL,
   `Status` enum('В наличии','Выдан','Списан') NOT NULL,
-  `Description` text
+  `Description` text,
+  `rOpId` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `documents`
 --
 
-INSERT INTO `documents` (`ID`, `DocumentName`, `CreationDate`, `ArchiveDate`, `LocationID`, `Status`, `Description`) VALUES
-(14, 'Проектная документация на строительство нового здания', '2024-11-05', '2024-11-23', 4302, 'В наличии', ''),
-(15, 'Регламент по обработке персональных данных сотрудников', '2022-09-15', '2024-11-23', 4304, 'В наличии', ''),
-(16, 'Отчет о результатах испытаний нового оборудования', '2024-04-11', '2024-11-23', 4303, 'В наличии', ''),
-(17, 'Инструкция по безопасной эксплуатации электрооборудования', '2024-11-13', '2024-11-23', 4305, 'В наличии', ''),
-(18, 'Документ по ремонту и техническому обслуживанию станков', '2023-01-03', '2024-11-23', 4306, 'В наличии', ''),
-(19, 'Технический паспорт на системы вентиляции', '2019-10-17', '2024-11-23', 4307, 'В наличии', ''),
-(20, 'Смета на строительство офисных помещений', '2024-11-06', '2024-11-23', 4308, 'В наличии', ''),
-(21, 'Схема расположения кабельных линий в офисе', '2018-10-10', '2024-11-23', 4309, 'В наличии', ''),
-(22, 'Пожарный план эвакуации для офисного здания', '2024-02-15', '2024-11-23', 4310, 'В наличии', ''),
-(23, 'Документы для сертификации оборудования на соответствие ISO', '2022-09-22', '2024-11-23', 4311, 'В наличии', ''),
-(24, 'Годовой финансовый отчет компании', '2024-02-14', '2024-11-23', 4312, 'В наличии', ''),
-(25, 'Трудовой договор с новым сотрудником отдела продаж', '2024-11-22', '2024-11-23', 4313, 'В наличии', ''),
-(26, 'Маркетинговая стратегия по продвижению нового продукта', '2024-08-08', '2024-11-23', 4314, 'В наличии', ''),
-(27, 'Договор о предоставлении юридических услуг для компании', '2024-10-29', '2024-11-23', 4315, 'В наличии', ''),
-(28, 'Контракт на поставку материалов для производства', '2024-09-11', '2024-11-23', 4316, 'В наличии', ''),
-(29, 'Протокол совещания по вопросам качества продукции', '2024-05-15', '2024-11-23', 4317, 'В наличии', ''),
-(30, 'Документация по внедрению системы информационной безопасности', '2024-10-28', '2024-11-23', 4318, 'В наличии', ''),
-(31, 'Документ по экологической оценке проекта', '2023-09-20', '2024-11-23', 4319, 'В наличии', ''),
-(32, 'Технические данные для транспортировки оборудования', '2024-11-08', '2024-11-23', 4320, 'В наличии', ''),
-(33, 'Документ по контролю качества производства продукции', '2024-11-13', '2024-11-23', 4321, 'В наличии', '');
+INSERT INTO `documents` (`ID`, `DocumentName`, `CreationDate`, `ArchiveDate`, `LocationID`, `Status`, `Description`, `rOpId`) VALUES
+(15, 'Регламент по обработке персональных данных сотрудников', '2022-09-15', '2024-11-23', 4304, 'В наличии', '', 27),
+(16, 'Отчет о результатах испытаний нового оборудования', '2024-04-11', '2024-11-23', 4303, 'В наличии', '', 25),
+(17, 'Инструкция по безопасной эксплуатации электрооборудования', '2024-11-13', '2024-11-23', 4305, 'В наличии', '', NULL),
+(18, 'Документ по ремонту и техническому обслуживанию станков', '2023-01-03', '2024-11-23', 4306, 'В наличии', '', NULL),
+(19, 'Технический паспорт на системы вентиляции', '2019-10-17', '2024-11-23', 4307, 'В наличии', '', NULL),
+(20, 'Смета на строительство офисных помещений', '2024-11-06', '2024-11-23', 4308, 'В наличии', '', NULL),
+(21, 'Схема расположения кабельных линий в офисе', '2018-10-10', '2024-11-23', 4309, 'В наличии', '', NULL),
+(22, 'Пожарный план эвакуации для офисного здания', '2024-02-15', '2024-11-23', 4310, 'В наличии', '', NULL),
+(23, 'Документы для сертификации оборудования на соответствие ISO', '2022-09-22', '2024-11-23', 4311, 'В наличии', '', NULL),
+(24, 'Годовой финансовый отчет компании', '2024-02-14', '2024-11-23', 4312, 'В наличии', '', NULL),
+(25, 'Трудовой договор с новым сотрудником отдела продаж', '2024-11-22', '2024-11-23', 4313, 'В наличии', '', NULL),
+(26, 'Маркетинговая стратегия по продвижению нового продукта', '2024-08-08', '2024-11-23', 4314, 'В наличии', '', NULL),
+(27, 'Договор о предоставлении юридических услуг для компании', '2024-10-29', '2024-11-23', 4315, 'В наличии', '', NULL),
+(28, 'Контракт на поставку материалов для производства', '2024-09-11', '2024-11-23', 4316, 'В наличии', '', NULL),
+(29, 'Протокол совещания по вопросам качества продукции', '2024-05-15', '2024-11-23', 4317, 'В наличии', '', NULL),
+(30, 'Документация по внедрению системы информационной безопасности', '2024-10-28', '2024-11-23', 4318, 'В наличии', '', NULL),
+(31, 'Документ по экологической оценке проекта', '2023-09-20', '2024-11-23', 4319, 'В наличии', '', NULL),
+(32, 'Технические данные для транспортировки оборудования', '2024-11-08', '2024-11-23', 4320, 'В наличии', '', NULL),
+(33, 'Документ по контролю качества производства продукции', '2024-11-13', '2024-11-23', 4321, 'В наличии', '', NULL),
+(34, 'Проектная документация на строительство нового здания', '2024-11-12', '2024-11-23', 4302, 'В наличии', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -235,9 +235,10 @@ CREATE TABLE `document_authors` (
 INSERT INTO `document_authors` (`DocumentID`, `AuthorID`) VALUES
 (23, 2),
 (33, 3),
-(14, 4),
+(34, 3),
 (27, 4),
 (33, 4),
+(34, 4),
 (20, 9),
 (32, 9),
 (23, 12),
@@ -277,7 +278,7 @@ CREATE TABLE `document_categories` (
 --
 
 INSERT INTO `document_categories` (`DocumentID`, `CategoryID`) VALUES
-(14, 13),
+(34, 13),
 (15, 14),
 (16, 15),
 (17, 16),
@@ -363,7 +364,12 @@ CREATE TABLE `operations` (
 --
 
 INSERT INTO `operations` (`ID`, `opType`, `opDate`, `opID`, `emID`, `docId`, `description`) VALUES
-(1, 'Выдача', '2024-11-22 18:45:30', NULL, NULL, NULL, '');
+(23, 'Выдача', '2024-11-23 22:37:25', 1, 33, 15, ''),
+(24, 'Возврат', '2024-11-23 22:38:45', 1, 33, 15, ''),
+(25, 'Выдача', '2024-11-23 22:39:19', 1, 33, 16, ''),
+(26, 'Возврат', '2024-11-23 22:39:39', 1, 33, 16, ''),
+(27, 'Выдача', '2024-11-23 22:41:44', 1, 33, 15, ''),
+(28, 'Возврат', '2024-11-23 22:41:54', 1, 33, 15, '');
 
 -- --------------------------------------------------------
 
@@ -936,8 +942,8 @@ ALTER TABLE `employees`
 ALTER TABLE `operations`
   ADD PRIMARY KEY (`ID`),
   ADD KEY `FK_employees_2` (`emID`),
-  ADD KEY `FK_operations_1` (`opID`),
-  ADD KEY `FK_employees_3` (`docId`);
+  ADD KEY `FK_employees_3` (`docId`),
+  ADD KEY `FK_employees_4` (`opID`);
 
 --
 -- Indexes for table `racks`
@@ -974,7 +980,7 @@ ALTER TABLE `tblissuedbookdetails`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `authors`
@@ -998,7 +1004,7 @@ ALTER TABLE `departments`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `employees`
@@ -1010,7 +1016,7 @@ ALTER TABLE `employees`
 -- AUTO_INCREMENT for table `operations`
 --
 ALTER TABLE `operations`
-  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `racks`
@@ -1072,7 +1078,7 @@ ALTER TABLE `employees`
 ALTER TABLE `operations`
   ADD CONSTRAINT `FK_employees_2` FOREIGN KEY (`emID`) REFERENCES `employees` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_employees_3` FOREIGN KEY (`docId`) REFERENCES `documents` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_operations_1` FOREIGN KEY (`opID`) REFERENCES `employees` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_employees_4` FOREIGN KEY (`opID`) REFERENCES `admin` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `shelves`

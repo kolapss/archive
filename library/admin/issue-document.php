@@ -21,6 +21,12 @@ if (strlen($_SESSION['alogin']) == 0) {
         $query->bindParam(':description', $description, PDO::PARAM_STR);
         $query->execute();
         $lastInsertId = $dbh->lastInsertId();
+        //Изменить статус ячейки
+        $sql="UPDATE documents SET Status = 'Выдан', rOpId = :rOpId WHERE documents.ID = :docID";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':docID', $docID, PDO::PARAM_INT);
+        $query->bindParam(':rOpId', $lastInsertId, PDO::PARAM_INT);
+        $query->execute();
         if ($lastInsertId) {
             $_SESSION['msg'] = "Документ успешно выдан";
             header('location:manage-issued-documents.php');

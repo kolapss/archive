@@ -7,7 +7,7 @@ if (strlen($_SESSION['alogin']) == 0) {
 } else {
     if (isset($_GET['del'])) {
         $id = $_GET['del'];
-        $locationID=$_GET['cellID'];
+        $locationID = $_GET['cellID'];
         //Выполнить запрос на удаление документа из таблицы documents
         $sql = "delete from documents  WHERE ID=:id";
         $query = $dbh->prepare($sql);
@@ -18,22 +18,54 @@ if (strlen($_SESSION['alogin']) == 0) {
         $upCell = "UPDATE storagecells 
                     SET CellStatus = :status
                     WHERE ID = :locationId";
-        $queryUpCell=$dbh->prepare($upCell);
-        $queryUpCell->bindParam(':locationId',$locationID,PDO::PARAM_INT);
-        $queryUpCell->bindParam(':status',$status,PDO::PARAM_STR);
+        $queryUpCell = $dbh->prepare($upCell);
+        $queryUpCell->bindParam(':locationId', $locationID, PDO::PARAM_INT);
+        $queryUpCell->bindParam(':status', $status, PDO::PARAM_STR);
         $queryUpCell->execute();
         //Выполнить запрос на удаление соответствующих записей из document_authors
         $delDocAuth = "delete from document_authors WHERE DocumentID=:id";
-        $queryDelDocAuth=$dbh->prepare($delDocAuth);
-        $queryDelDocAuth->bindParam(':id',$id,PDO::PARAM_INT);
+        $queryDelDocAuth = $dbh->prepare($delDocAuth);
+        $queryDelDocAuth->bindParam(':id', $id, PDO::PARAM_INT);
         $queryDelDocAuth->execute();
         //Выполнить запрос на удаление соответствующих записей из document_categories
         $delDocAuth = "delete from document_categories WHERE DocumentID=:id";
-        $queryDelDocAuth=$dbh->prepare($delDocAuth);
-        $queryDelDocAuth->bindParam(':id',$id,PDO::PARAM_INT);
+        $queryDelDocAuth = $dbh->prepare($delDocAuth);
+        $queryDelDocAuth->bindParam(':id', $id, PDO::PARAM_INT);
         $queryDelDocAuth->execute();
         $_SESSION['delmsg'] = "Документ списан ";
         //header('location:manage-documents.php');
+    }
+    if (isset($_GET['return'])) {
+        $id = $_GET['return'];
+        $sql = "SELECT * FROM operations WHERE ID=:id";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':id',$id,PDO::PARAM_INT);
+        $query->execute();
+        $opInf=$query->fetch(PDO::FETCH_OBJ);
+        $docID=$opInf->docId;
+        //Добавь новую операцию
+        $opType="Возврат";
+        $sql = "INSERT INTO  operations(opType,opID,emID,docId,description) VALUES(:opType,:opId,:emId,:docId, :description)";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':opType', $opType, PDO::PARAM_STR);
+        $query->bindParam(':opId', $opInf->opID, PDO::PARAM_INT);
+        $query->bindParam(':emId', $opInf->emID, PDO::PARAM_INT);
+        $query->bindParam(':docId', $opInf->docId, PDO::PARAM_INT);
+        $query->bindParam(':description', $opInf->description, PDO::PARAM_STR);
+        $query->execute();
+        $lastInsertId = $dbh->lastInsertId();
+        ////Изменить статус ячейки
+        $sql="UPDATE documents SET Status = 'В наличии' WHERE documents.ID = :docID";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':docID', $docID, PDO::PARAM_INT);
+        $query->execute();
+        if ($lastInsertId) {
+            $_SESSION['msg'] = "Документ успешно возвращен";
+            //header('location:manage-documents.php');
+        } else {
+            $_SESSION['error'] = "Что-то пошло не так. Попробуйте еще раз";
+            //header('location:manage-documents.php');
+        }
     }
 
 
@@ -149,6 +181,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                             d.Status,
                                                             d.LocationID,
                                                             d.Description,
+                                                            d.rOpId,
                                                             sc.CellNumber,
                                                             s.ShelfNumber,
                                                             r.RackNumber
@@ -170,7 +203,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                                     JOIN authors a ON da.AuthorID = a.id
                                                                     WHERE da.DocumentID = :docID";
                                                     $querySrAuthors = $dbh->prepare($srAuthors);
-                                                    $querySrAuthors->bindParam(':docID',$docID, PDO::PARAM_INT);
+                                                    $querySrAuthors->bindParam(':docID', $docID, PDO::PARAM_INT);
                                                     $querySrAuthors->execute();
                                                     //Выполнить запрос на получении категорий
                                                     $srCategories = "SELECT c.CategoryName
@@ -178,35 +211,36 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                                         JOIN category c ON dc.CategoryID = c.id
                                                                         WHERE dc.DocumentID = :docID";
                                                     $querysrCategories = $dbh->prepare($srCategories);
-                                                    $querysrCategories->bindParam(':docID',$docID, PDO::PARAM_INT);
+                                                    $querysrCategories->bindParam(':docID', $docID, PDO::PARAM_INT);
                                                     $querysrCategories->execute();
                                             ?>
                                                     <tr class="odd gradeX">
                                                         <td class="center"><?php echo htmlentities($cnt); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->DocumentName); ?></td>
-                                                        <td class="center"><?php 
-                                                        $authors = $querySrAuthors->fetchAll(PDO::FETCH_OBJ);
-                                                        foreach($authors as $author)
-                                                        {
-                                                            echo '<span>• </span>'. $author->AuthorName.'<br>';
-                                                        }
-                                                        ?></td>
-                                                        <td class="center"><?php 
-                                                        $categories = $querysrCategories->fetchAll(PDO::FETCH_OBJ);
-                                                        foreach($categories as $category)
-                                                        {
-                                                            echo '<span>• </span>'.$category->CategoryName.'<br>';
-                                                        }
-                                                        ?></td>
+                                                        <td class="center"><?php
+                                                                            $authors = $querySrAuthors->fetchAll(PDO::FETCH_OBJ);
+                                                                            foreach ($authors as $author) {
+                                                                                echo '<span>• </span>' . $author->AuthorName . '<br>';
+                                                                            }
+                                                                            ?></td>
+                                                        <td class="center"><?php
+                                                                            $categories = $querysrCategories->fetchAll(PDO::FETCH_OBJ);
+                                                                            foreach ($categories as $category) {
+                                                                                echo '<span>• </span>' . $category->CategoryName . '<br>';
+                                                                            }
+                                                                            ?></td>
                                                         <td class="center"><?php echo htmlentities($result->CreationDate); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->ArchiveDate); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->Status); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->Description); ?></td>
                                                         <td class="center"><?php echo 'Стеллаж: ' . $result->RackNumber . ' <br>Полка: ' . $result->ShelfNumber . ' <br>Ячейка: ' . $result->CellNumber; ?></td>
                                                         <td class="center">
-
                                                             <a href="edit-document.php?docid=<?php echo htmlentities($result->ID); ?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Изменить</button>
                                                                 <a href="manage-documents.php?del=<?php echo htmlentities($result->ID); ?>&cellID=<?php echo htmlentities($result->LocationID); ?>" onclick="return confirm('Are you sure you want to delete?');"" >  <button class=" btn btn-danger"><i class="fa fa-pencil"></i> Списать</button>
+                                                                    <?php if ($result->Status == "Выдан") {
+                                                                        echo "<a href=\"manage-documents.php?return=" . $result->rOpId . "\" onclick=\"return confirm('Are you sure you want to delete?');\"\" >  <button class=\" btn btn-primary\"><i class=\"fa fa-edit\"></i> Вернуть</button>";
+                                                                    }
+                                                                    ?>
                                                         </td>
                                                     </tr>
                                             <?php $cnt = $cnt + 1;
