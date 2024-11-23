@@ -105,13 +105,13 @@ if (strlen($_SESSION['alogin']) == 0) {
                     <div class="col-md-10 col-sm-6 col-xs-12 col-md-offset-1"">
 <div class=" panel panel-info">
                         <div class="panel-heading">
-                            Issue a New Book
+                            Выдать документ
                         </div>
                         <div class="panel-body">
                             <form role="form" method="post">
 
                                 <div class="form-group">
-                                    <label>Srtudent id<span style="color:red;">*</span></label>
+                                    <label>id абонента<span style="color:red;">*</span></label>
                                     <input class="form-control" type="text" name="studentid" id="studentid" onBlur="getstudent()" autocomplete="off" required />
                                 </div>
 
@@ -141,7 +141,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                     <textarea class="form-control" name="description" rows="4" maxlength="1000" placeholder="Введите описание"></textarea>
                                 </div>
 
-                                <button type="submit" name="issue" id="submit" class="btn btn-info">Issue Book </button>
+                                <button type="submit" name="issue" id="submit" class="btn btn-info">Выдать документ </button>
 
                             </form>
                         </div>
