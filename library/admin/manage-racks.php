@@ -23,7 +23,7 @@ if (strlen($_SESSION['alogin']) == 0) {
             $query->bindParam(':id', $id, PDO::PARAM_STR);
             $query->execute();
             $_SESSION['delmsg'] = "Стеллаж подготовлен к списанию ";
-        }else{
+        } else {
             $_SESSION['error'] = "Сначала освободите ячейки стеллажа ";
         }
         //header('location:manage-racks.php');
@@ -122,6 +122,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                 <th>#</th>
                                                 <th>Дата поступления</th>
                                                 <th>Вместимость</th>
+                                                <th>% занятости</th>
                                                 <th>Статус</th>
                                                 <th>Описание</th>
                                                 <th>Действия</th>
@@ -139,6 +140,19 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                         <td class="center"><?php echo htmlentities($result->RackNumber); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->deliveryDate); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->Capacity); ?></td>
+                                                        <?php
+                                                        $sql = "
+                                                        SELECT COUNT(*) AS OccupiedCellCount
+                                                        FROM storagecells sc
+                                                        INNER JOIN shelves s ON sc.ShelfID = s.ID
+                                                        WHERE s.RackID = :rackID AND sc.CellStatus = 'Занято';";
+                                                        $stmt = $dbh->prepare($sql);
+                                                        $stmt->bindParam(':rackID', $result->ID, PDO::PARAM_INT);
+                                                        $stmt->execute();
+                                                        $numOcupiedCells = $stmt->fetch(PDO::FETCH_OBJ)->OccupiedCellCount;
+                                                        $perOccu=round($numOcupiedCells/$result->Capacity*100,1);
+                                                        ?>
+                                                        <td class="center"><?php echo htmlentities($perOccu); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->RackStatus); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->Description); ?></td>
                                                         <td class="center">
@@ -193,6 +207,8 @@ if (strlen($_SESSION['alogin']) == 0) {
         <script>
             $(document).ready(function() {
                 $('.view-details').on('click', function() {
+
+                    $('#dataTables-modal').DataTable().destroy();
                     const rackId = $(this).data('id');
                     $.ajax({
                         url: 'requests/get_storagecells.php',
@@ -220,7 +236,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         </script>
         <!-- Модальное окно-->
         <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="detailsModalLabel">Детали ячеек</h5>
@@ -240,6 +256,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
+                                                <th>Название документа</th>
                                                 <th>Номер ячейки</th>
                                                 <th>ID полки</th>
                                                 <th>Статус ячейки</th>
