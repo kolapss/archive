@@ -7,11 +7,25 @@ if (strlen($_SESSION['alogin']) == 0) {
 } else {
     if (isset($_GET['del'])) {
         $id = $_GET['del'];
-        $sql = "delete from racks  WHERE ID=:id";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':id', $id, PDO::PARAM_STR);
-        $query->execute();
-        $_SESSION['delmsg'] = "Стеллаж подготовлен к списанию ";
+        // SQL-запрос для подсчета количества занятых ячеек для заданного стеллажа
+        $sql = "
+            SELECT COUNT(*) AS OccupiedCellCount
+            FROM storagecells sc
+            INNER JOIN shelves s ON sc.ShelfID = s.ID
+            WHERE s.RackID = :rackID AND sc.CellStatus = 'Занято';";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':rackID', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        if ($result->OccupiedCellCount == 0) {
+            $sql = "delete from racks  WHERE ID=:id";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':id', $id, PDO::PARAM_STR);
+            $query->execute();
+            $_SESSION['delmsg'] = "Стеллаж подготовлен к списанию ";
+        }else{
+            $_SESSION['error'] = "Сначала освободите ячейки стеллажа ";
+        }
         //header('location:manage-racks.php');
     }
 
@@ -220,28 +234,28 @@ if (strlen($_SESSION['alogin']) == 0) {
                             <div class="panel-heading">
                                 Список ячеек
                             </div>
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered table-hover" id="dataTables-modal">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Номер ячейки</th>
-                                            <th>ID полки</th>
-                                            <th>Статус ячейки</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cellDetails"></tbody>
-                                </table>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered table-hover" id="dataTables-modal">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Номер ячейки</th>
+                                                <th>ID полки</th>
+                                                <th>Статус ячейки</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cellDetails"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
     </body>
 

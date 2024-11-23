@@ -8,10 +8,12 @@ if (strlen($_SESSION['alogin']) == 0) {
     if (isset($_GET['del'])) {
         $id = $_GET['del'];
         $locationID=$_GET['cellID'];
+        //Выполнить запрос на удаление документа из таблицы documents
         $sql = "delete from documents  WHERE ID=:id";
         $query = $dbh->prepare($sql);
         $query->bindParam(':id', $id, PDO::PARAM_STR);
         $query->execute();
+        //Выполнить запрос на освбождение занятой документом ячейкиы
         $status = 'Свободно';
         $upCell = "UPDATE storagecells 
                     SET CellStatus = :status
@@ -20,6 +22,16 @@ if (strlen($_SESSION['alogin']) == 0) {
         $queryUpCell->bindParam(':locationId',$locationID,PDO::PARAM_INT);
         $queryUpCell->bindParam(':status',$status,PDO::PARAM_STR);
         $queryUpCell->execute();
+        //Выполнить запрос на удаление соответствующих записей из document_authors
+        $delDocAuth = "delete from document_authors WHERE DocumentID=:id";
+        $queryDelDocAuth=$dbh->prepare($delDocAuth);
+        $queryDelDocAuth->bindParam(':id',$id,PDO::PARAM_INT);
+        $queryDelDocAuth->execute();
+        //Выполнить запрос на удаление соответствующих записей из document_categories
+        $delDocAuth = "delete from document_categories WHERE DocumentID=:id";
+        $queryDelDocAuth=$dbh->prepare($delDocAuth);
+        $queryDelDocAuth->bindParam(':id',$id,PDO::PARAM_INT);
+        $queryDelDocAuth->execute();
         $_SESSION['delmsg'] = "Документ списан ";
         //header('location:manage-documents.php');
     }
