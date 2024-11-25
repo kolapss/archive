@@ -21,7 +21,9 @@
 
         },
         dataTable_fun: function () {
-
+            $('#dataTables-report').dataTable({
+                "ordering": false // Отключение клиентской сортировки
+            });
             $('#dataTables-example').dataTable();
 
         },

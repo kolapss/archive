@@ -14,66 +14,57 @@ if (strlen($_SESSION['alogin']) == 0) {
     switch ($reportType) {
       case 'report1':
         $query = "SELECT 
-                  d.DocumentName AS НазваниеДокумента,
-                  COUNT(CASE WHEN o.opType = 'Выдача' THEN 1 END) AS 'Количество выдач',
-                  d.Status AS СтатусДокумента
+                  d.DocumentName AS `Название документа`,
+                  COUNT(CASE WHEN o.opType = 'Выдача' THEN 1 END) AS `Количество выдач`,
+                  d.Status AS `Статус документа`
                   FROM documents d
                   LEFT JOIN operations o ON d.ID = o.docId
                   GROUP BY d.ID
-                  ORDER BY КоличествоВыдач DESC";
+                  ORDER BY `Количество выдач` DESC";
         break;
 
       case 'report2':
         $query = "SELECT 
-                  e.FullName AS ФИОСотрудника,
+                  e.FullName AS `ФИО сотрудника`,
                   e.Position AS Должность,
                   d.depName AS Отдел,
-                  COUNT(o.ID) AS КоличествоОпераций
+                  COUNT(o.ID) AS `Кол-во выданных документов (всего)`
                   FROM employees e
                   LEFT JOIN operations o ON e.ID = o.emID
                   LEFT JOIN departments d ON e.DepID = d.ID
+                  WHERE o.opType='Выдача'
                   GROUP BY e.ID
-                  ORDER BY КоличествоОпераций DESC";
+                  ORDER BY `Кол-во выданных документов (всего)` DESC";
         break;
 
       case 'report3':
         $query = "SELECT 
-                  r.ID AS IDСтеллажа,
-                  r.RackNumber AS НомерСтеллажа,
-                  r.RackStatus AS СтатусСтеллажа,
-                  r.Capacity AS ВместимостьСтеллажа,
-                  COUNT(s.ID) AS КоличествоПолок,
-                  SUM(s.Capacity) AS ВместимостьПолок
-                  FROM racks r
-                  LEFT JOIN shelves s ON r.ID = s.RackID
-                  GROUP BY r.ID
-                  ORDER BY r.RackStatus DESC, r.RackNumber";
+                      racks.RackNumber AS `Номер стеллажа`,
+                      racks.RackStatus AS `Статус стеллажа`,
+                      racks.Capacity AS `Вместимость стеллажа`,
+                      ROUND(
+                          (SUM(CASE WHEN storagecells.CellStatus = 'Занято' THEN 1 ELSE 0 END) / COUNT(storagecells.ID)) * 100, 
+                          2
+                      ) AS `Процент занятости`
+                  FROM 
+                      racks
+                  LEFT JOIN 
+                      shelves ON racks.ID = shelves.RackID
+                  LEFT JOIN 
+                      storagecells ON shelves.ID = storagecells.ShelfID
+                  GROUP BY 
+                      racks.ID, `Номер стеллажа`;
+";
         break;
 
       case 'report4':
         $query = "SELECT 
-                  t.id AS IDВыдачи,
-                  d.DocumentName AS НазваниеКниги,
-                  t.StudentID AS IDСтудента,
-                  t.IssuesDate AS ДатаВыдачи,
-                  DATEDIFF(CURRENT_DATE, t.ReturnDate) AS ПросроченныеДни,
-                  t.fine AS НачисленныйШтраф
-                  FROM tblissuedbookdetails t
-                  LEFT JOIN documents d ON t.BookId = d.ID
-                  WHERE t.RetrunStatus = 0 
-                  AND t.ReturnDate IS NOT NULL
-                  AND CURRENT_DATE > t.ReturnDate
-                  ORDER BY ПросроченныеДни DESC";
-        break;
-
-      case 'report5':
-        $query = "SELECT 
-                  c.CategoryName AS НазваниеКатегории,
-                  COUNT(dc.DocumentID) AS КоличествоДокументов
+                  c.CategoryName AS `Название категории`,
+                  COUNT(dc.DocumentID) AS `Количество документов`
                   FROM category c
                   LEFT JOIN document_categories dc ON c.id = dc.CategoryID
                   GROUP BY c.id
-                  ORDER BY КоличествоДокументов DESC";
+                  ORDER BY `Количество документов` DESC";
         break;
 
       default:
@@ -89,18 +80,14 @@ if (strlen($_SESSION['alogin']) == 0) {
             $txt = "Отчет популярности документов";
             break;
           case 'report2':
-            $txt = "Отчет загруженности сотрудников";
+            $txt = "Статистика выданных документов (всего)";
             break;
           case 'report3':
             $txt = "Отчет заполненности стеллажей";
             break;
 
           case 'report4':
-            $txt = "Отчет просроченных возвратов";
-            break;
-
-          case 'report5':
-            $txt = "Отчет по ктегориям и авторам";
+            $txt = "Отчет по количеству документов в категории";
             break;
 
           default:
@@ -109,7 +96,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         }
         $reportData = "<div class='panel-heading'>" .
           $txt
-          . "</div><div class='panel-body'><div class='table-responsiv'><table class='table table-striped table-bordered table-hover' id='dataTables-example'><thead>";
+          . "</div><div class='panel-body'><div class='table-responsiv'><table class='table table-striped table-bordered table-hover' id='dataTables-report'><thead>";
         $columns = array_keys($result->fetch(PDO::FETCH_ASSOC)); // Заголовки таблицы
         foreach ($columns as $col) {
           $reportData .= "<th>" . htmlspecialchars($col) . "</th>";
@@ -169,10 +156,9 @@ if (strlen($_SESSION['alogin']) == 0) {
             <select name="reportType" id="reportType" class="form-control">
               <option value="">--Выберите--</option>
               <option value="report1">Популярность документов</option>
-              <option value="report2">Загруженность сотрудников</option>
+              <option value="report2">Кол-во выданных документов по сотрудникам</option>
               <option value="report3">Заполненность стеллажей</option>
-              <option value="report4">Просроченные возвраты</option>
-              <option value="report5">Категории и авторы</option>
+              <option value="report4">Количество документов в категории</option>
             </select>
           </div>
           <button type="submit" class="btn btn-primary">Сформировать</button>

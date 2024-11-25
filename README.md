@@ -34,5 +34,5 @@
 
 
 
-Student Dashboard:
+Панель управления пользователя:
 ![alt text](https://github.com/kolapss/archive/blob/main/Images/3.png?raw=true)
