@@ -21,18 +21,18 @@
 
 Домашняя страница: 
 
-![alt text](https://github.com/kumarpandule2000/Online-Library-Management-System-PHP/blob/master/Images/1%20Updated.png?raw=true)
+![alt text](https://github.com/kolapss/archive/blob/main/Images/1.png?raw=true)
 
 
 
 
 Панель управления администратора:
 
-![alt text](https://github.com/kumarpandule2000/Online-Library-Management-System-PHP/blob/master/Images/3%20Updated.png?raw=true)
+![alt text](https://github.com/kolapss/archive/blob/main/Images/2.png?raw=true)
 
 
 
 
 
 Student Dashboard:
-![alt text](https://github.com/kumarpandule2000/Online-Library-Management-System-PHP/blob/master/Images/2.png?raw=true)
+![alt text](https://github.com/kolapss/archive/blob/main/Images/3.png?raw=true)
