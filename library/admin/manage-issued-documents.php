@@ -126,7 +126,12 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                     <tr class="odd gradeX">
                                                         <td class="center"><?php echo htmlentities($result->OperationID); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->DocumentName); ?></td>
-                                                        <td class="center"><?php echo htmlentities($result->OperationType); ?></td>
+                                                        <td class="center"><?php if ($result->OperationType == "Возврат") { ?>
+                                                                <a href="#" class="btn btn-success btn-xs">Возврат</a>
+                                                            <?php } else { ?>
+                                                                <a href="#" class="btn btn-danger btn-xs">Выдача</a>
+                                                            <?php } ?>
+                                                        </td>
                                                         <td class="center"><?php echo htmlentities($result->OperationDate); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->OperationByEmployee); ?></td>
                                                         <td class="center"><?php echo htmlentities($result->EmployeeName); ?></td>

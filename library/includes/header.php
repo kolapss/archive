@@ -39,7 +39,7 @@
                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="change-password.php">Поменять пароль</a></li>
                                 </ul>
                             </li>
-                            <li><a href="issued-books.php">Выданные документы</a></li>
+                            <li><a href="issued-documents.php">Выданные документы</a></li>
 
 
                         </ul>
