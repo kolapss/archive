@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 23, 2024 at 11:42 PM
+-- Generation Time: Nov 27, 2024 at 11:27 AM
 -- Server version: 9.0.1
 -- PHP Version: 8.2.12
 
@@ -118,7 +118,7 @@ INSERT INTO `authors` (`id`, `AuthorName`, `creationDate`) VALUES
 
 CREATE TABLE `category` (
   `id` int UNSIGNED NOT NULL,
-  `CategoryName` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `CategoryName` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Status` int DEFAULT NULL,
   `CreationDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -157,8 +157,8 @@ INSERT INTO `category` (`id`, `CategoryName`, `Status`, `CreationDate`) VALUES
 
 CREATE TABLE `departments` (
   `ID` int UNSIGNED NOT NULL,
-  `depName` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `depName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `departments`
@@ -182,14 +182,14 @@ INSERT INTO `departments` (`ID`, `depName`) VALUES
 
 CREATE TABLE `documents` (
   `ID` int UNSIGNED NOT NULL,
-  `DocumentName` varchar(200) NOT NULL,
+  `DocumentName` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `CreationDate` date NOT NULL,
   `ArchiveDate` date NOT NULL,
   `LocationID` int UNSIGNED NOT NULL,
-  `Status` enum('В наличии','Выдан','Списан') NOT NULL,
-  `Description` text,
+  `Status` enum('В наличии','Выдан','Списан') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `rOpId` int UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `documents`
@@ -200,22 +200,23 @@ INSERT INTO `documents` (`ID`, `DocumentName`, `CreationDate`, `ArchiveDate`, `L
 (16, 'Отчет о результатах испытаний нового оборудования', '2024-04-11', '2024-11-23', 4303, 'В наличии', '', 25),
 (17, 'Инструкция по безопасной эксплуатации электрооборудования', '2024-11-13', '2024-11-23', 4305, 'В наличии', '', NULL),
 (18, 'Документ по ремонту и техническому обслуживанию станков', '2023-01-03', '2024-11-23', 4306, 'В наличии', '', NULL),
-(19, 'Технический паспорт на системы вентиляции', '2019-10-17', '2024-11-23', 4307, 'В наличии', '', NULL),
+(19, 'Технический паспорт на системы вентиляции', '2019-10-17', '2024-11-23', 4307, 'В наличии', '', 31),
 (20, 'Смета на строительство офисных помещений', '2024-11-06', '2024-11-23', 4308, 'В наличии', '', NULL),
 (21, 'Схема расположения кабельных линий в офисе', '2018-10-10', '2024-11-23', 4309, 'В наличии', '', NULL),
-(22, 'Пожарный план эвакуации для офисного здания', '2024-02-15', '2024-11-23', 4310, 'В наличии', '', NULL),
+(22, 'Пожарный план эвакуации для офисного здания', '2024-02-15', '2024-11-23', 4310, 'В наличии', '', 29),
 (23, 'Документы для сертификации оборудования на соответствие ISO', '2022-09-22', '2024-11-23', 4311, 'В наличии', '', NULL),
 (24, 'Годовой финансовый отчет компании', '2024-02-14', '2024-11-23', 4312, 'В наличии', '', NULL),
 (25, 'Трудовой договор с новым сотрудником отдела продаж', '2024-11-22', '2024-11-23', 4313, 'В наличии', '', NULL),
 (26, 'Маркетинговая стратегия по продвижению нового продукта', '2024-08-08', '2024-11-23', 4314, 'В наличии', '', NULL),
 (27, 'Договор о предоставлении юридических услуг для компании', '2024-10-29', '2024-11-23', 4315, 'В наличии', '', NULL),
-(28, 'Контракт на поставку материалов для производства', '2024-09-11', '2024-11-23', 4316, 'В наличии', '', NULL),
+(28, 'Контракт на поставку материалов для производства', '2024-09-11', '2024-11-23', 4316, 'Выдан', '', 33),
 (29, 'Протокол совещания по вопросам качества продукции', '2024-05-15', '2024-11-23', 4317, 'В наличии', '', NULL),
 (30, 'Документация по внедрению системы информационной безопасности', '2024-10-28', '2024-11-23', 4318, 'В наличии', '', NULL),
 (31, 'Документ по экологической оценке проекта', '2023-09-20', '2024-11-23', 4319, 'В наличии', '', NULL),
 (32, 'Технические данные для транспортировки оборудования', '2024-11-08', '2024-11-23', 4320, 'В наличии', '', NULL),
 (33, 'Документ по контролю качества производства продукции', '2024-11-13', '2024-11-23', 4321, 'В наличии', '', NULL),
-(34, 'Проектная документация на строительство нового здания', '2024-11-12', '2024-11-23', 4302, 'В наличии', '', NULL);
+(34, 'Проектная документация на строительство нового здания', '2024-11-12', '2024-11-23', 4302, 'В наличии', '', NULL),
+(35, 'test', '2024-11-13', '2024-11-25', 4322, 'В наличии', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -226,7 +227,7 @@ INSERT INTO `documents` (`ID`, `DocumentName`, `CreationDate`, `ArchiveDate`, `L
 CREATE TABLE `document_authors` (
   `DocumentID` int UNSIGNED NOT NULL,
   `AuthorID` int UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `document_authors`
@@ -236,6 +237,7 @@ INSERT INTO `document_authors` (`DocumentID`, `AuthorID`) VALUES
 (23, 2),
 (33, 3),
 (34, 3),
+(35, 3),
 (27, 4),
 (33, 4),
 (34, 4),
@@ -271,7 +273,7 @@ INSERT INTO `document_authors` (`DocumentID`, `AuthorID`) VALUES
 CREATE TABLE `document_categories` (
   `DocumentID` int UNSIGNED NOT NULL,
   `CategoryID` int UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `document_categories`
@@ -280,6 +282,7 @@ CREATE TABLE `document_categories` (
 INSERT INTO `document_categories` (`DocumentID`, `CategoryID`) VALUES
 (34, 13),
 (15, 14),
+(35, 14),
 (16, 15),
 (17, 16),
 (18, 17),
@@ -307,22 +310,22 @@ INSERT INTO `document_categories` (`DocumentID`, `CategoryID`) VALUES
 
 CREATE TABLE `employees` (
   `ID` int UNSIGNED NOT NULL,
-  `FullName` varchar(100) NOT NULL,
-  `email` varchar(30) NOT NULL,
-  `phone` varchar(12) NOT NULL,
-  `Position` varchar(100) NOT NULL,
+  `FullName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Position` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `DepID` int UNSIGNED NOT NULL,
   `RegDate` date NOT NULL,
-  `password` varchar(120) NOT NULL,
-  `Status` enum('Активный','Деактивирован') NOT NULL DEFAULT 'Активный'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `password` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Status` enum('Активный','Деактивирован') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Активный'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `employees`
 --
 
 INSERT INTO `employees` (`ID`, `FullName`, `email`, `phone`, `Position`, `DepID`, `RegDate`, `password`, `Status`) VALUES
-(33, 'Анастасия Кузнецова', 'roman.kuznetsov@example.com', '+79123456789', 'Юрист-консультант', 1, '2024-11-23', 'defaultpassword', 'Активный'),
+(33, 'Анастасия Кузнецова', 'roman.kuznetsov@example.com', '+79123456789', 'Юрист-консультант', 1, '2024-11-23', 'defaultpassword', 'Деактивирован'),
 (34, 'Владимир Михайлов', 'vladimir.mikhaylov@example.com', '+79122345678', 'Специалист по корпоративному праву', 1, '2024-11-23', 'defaultpassword', 'Активный'),
 (35, 'Ольга Михайлова', 'anna.mikhaylova@example.com', '+79121234567', 'Бухгалтер', 2, '2024-11-23', 'defaultpassword', 'Активный'),
 (36, 'Елена Иванова', 'elena.ivanova@example.com', '+79122345679', 'Главный бухгалтер', 2, '2024-11-23', 'defaultpassword', 'Активный'),
@@ -341,7 +344,8 @@ INSERT INTO `employees` (`ID`, `FullName`, `email`, `phone`, `Position`, `DepID`
 (49, 'Анна Михайлова', 'anna.mikhaylova@example.com', '+79126789012', 'Бухгалтер', 2, '2024-11-23', 'defaultpassword', 'Активный'),
 (50, 'Сергей Фёдоров', 'sergey.fedorov@example.com', '+79127890123', 'Финансовый аналитик', 3, '2024-11-23', 'defaultpassword', 'Активный'),
 (51, 'Сергей Петров', 'sergey.petrov@example.com', '+79128901234', 'HR-менеджер', 4, '2024-11-23', 'defaultpassword', 'Активный'),
-(52, 'Олег Петров', 'oleg.petrov@example.com', '+79129012345', 'Менеджер по продажам', 5, '2024-11-23', 'defaultpassword', 'Активный');
+(52, 'Олег Петров', 'oleg.petrov@example.com', '+79129012345', 'Менеджер по продажам', 5, '2024-11-23', 'defaultpassword', 'Активный'),
+(53, 'Дмитрий Богатов', 'example@gmail.com', '+79814568524', 'Товаровед', 6, '2024-11-25', '827ccb0eea8a706c4c34a16891f84e7b', 'Активный');
 
 -- --------------------------------------------------------
 
@@ -351,13 +355,13 @@ INSERT INTO `employees` (`ID`, `FullName`, `email`, `phone`, `Position`, `DepID`
 
 CREATE TABLE `operations` (
   `ID` int UNSIGNED NOT NULL,
-  `opType` enum('Выдача','Возврат','Списание') NOT NULL,
+  `opType` enum('Выдача','Возврат','Списание') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `opDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `opID` int UNSIGNED DEFAULT NULL,
   `emID` int UNSIGNED DEFAULT NULL,
   `docId` int UNSIGNED DEFAULT NULL,
-  `description` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `operations`
@@ -369,7 +373,12 @@ INSERT INTO `operations` (`ID`, `opType`, `opDate`, `opID`, `emID`, `docId`, `de
 (25, 'Выдача', '2024-11-23 22:39:19', 1, 33, 16, ''),
 (26, 'Возврат', '2024-11-23 22:39:39', 1, 33, 16, ''),
 (27, 'Выдача', '2024-11-23 22:41:44', 1, 33, 15, ''),
-(28, 'Возврат', '2024-11-23 22:41:54', 1, 33, 15, '');
+(28, 'Возврат', '2024-11-23 22:41:54', 1, 33, 15, ''),
+(29, 'Выдача', '2024-11-25 14:04:06', 1, 53, 22, ''),
+(30, 'Возврат', '2024-11-25 15:27:36', 1, 53, 22, ''),
+(31, 'Выдача', '2024-11-25 15:30:22', 1, 53, 19, ''),
+(32, 'Возврат', '2024-11-25 15:30:40', 1, 53, 19, ''),
+(33, 'Выдача', '2024-11-25 15:30:54', 1, 53, 28, '');
 
 -- --------------------------------------------------------
 
@@ -382,9 +391,9 @@ CREATE TABLE `racks` (
   `RackNumber` int UNSIGNED DEFAULT NULL,
   `deliveryDate` date NOT NULL,
   `Capacity` int UNSIGNED NOT NULL,
-  `RackStatus` enum('Списан','Заполнен','В работе') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `Description` varchar(1000) NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `RackStatus` enum('Списан','Заполнен','В работе') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `racks`
@@ -443,8 +452,8 @@ CREATE TABLE `storagecells` (
   `ID` int UNSIGNED NOT NULL,
   `CellNumber` int UNSIGNED NOT NULL,
   `ShelfID` int UNSIGNED NOT NULL,
-  `CellStatus` enum('Свободно','Занято') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `CellStatus` enum('Свободно','Занято') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `storagecells`
@@ -471,7 +480,7 @@ INSERT INTO `storagecells` (`ID`, `CellNumber`, `ShelfID`, `CellStatus`) VALUES
 (4319, 18, 83, 'Занято'),
 (4320, 19, 83, 'Занято'),
 (4321, 20, 83, 'Занято'),
-(4322, 1, 84, 'Свободно'),
+(4322, 1, 84, 'Занято'),
 (4323, 2, 84, 'Свободно'),
 (4324, 3, 84, 'Свободно'),
 (4325, 4, 84, 'Свободно'),
@@ -852,34 +861,6 @@ INSERT INTO `storagecells` (`ID`, `CellNumber`, `ShelfID`, `CellStatus`) VALUES
 (4900, 19, 115, 'Свободно'),
 (4901, 20, 115, 'Свободно');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `tblissuedbookdetails`
---
-
-CREATE TABLE `tblissuedbookdetails` (
-  `id` int NOT NULL,
-  `BookId` int DEFAULT NULL,
-  `StudentID` varchar(150) DEFAULT NULL,
-  `IssuesDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `ReturnDate` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `RetrunStatus` int DEFAULT NULL,
-  `fine` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tblissuedbookdetails`
---
-
-INSERT INTO `tblissuedbookdetails` (`id`, `BookId`, `StudentID`, `IssuesDate`, `ReturnDate`, `RetrunStatus`, `fine`) VALUES
-(1, 1, 'SID002', '2017-07-15 06:09:47', '2017-07-15 11:15:20', 1, 0),
-(2, 1, 'SID002', '2017-07-15 06:12:27', '2017-07-15 11:15:23', 1, 5),
-(3, 3, 'SID002', '2017-07-15 06:13:40', NULL, 0, NULL),
-(4, 3, 'SID002', '2017-07-15 06:23:23', '2017-07-15 11:22:29', 1, 2),
-(5, 1, 'SID009', '2017-07-15 10:59:26', NULL, 0, NULL),
-(6, 3, 'SID011', '2017-07-15 18:02:55', NULL, 0, NULL);
-
 --
 -- Indexes for dumped tables
 --
@@ -967,12 +948,6 @@ ALTER TABLE `storagecells`
   ADD KEY `FK_SHELVES` (`ShelfID`);
 
 --
--- Indexes for table `tblissuedbookdetails`
---
-ALTER TABLE `tblissuedbookdetails`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1004,19 +979,19 @@ ALTER TABLE `departments`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `operations`
 --
 ALTER TABLE `operations`
-  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `racks`
@@ -1035,12 +1010,6 @@ ALTER TABLE `shelves`
 --
 ALTER TABLE `storagecells`
   MODIFY `ID` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4902;
-
---
--- AUTO_INCREMENT for table `tblissuedbookdetails`
---
-ALTER TABLE `tblissuedbookdetails`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
